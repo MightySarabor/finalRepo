@@ -2,7 +2,11 @@ package de.hstr.bigdata;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import de.hstr.bigdata.Util.MyProducer;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -32,6 +36,9 @@ public class Pipe {
         props.put("security.protocol", "SASL_PLAINTEXT");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
+
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        exec.scheduleAtFixedRate(MyProducer::produce, 1, 1, TimeUnit.SECONDS);
 
         final StreamsBuilder builder = new StreamsBuilder();
 

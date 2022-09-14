@@ -1,19 +1,18 @@
 package de.hstr.bigdata.Util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import myapps.Util.Json.Json;
-import myapps.pojos.OrderPOJO;
+import de.hstr.bigdata.Util.Json.Json;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-import static myapps.Util.POJOGenerator.generateOrder;
-import static myapps.Util.POJOGenerator.generatePizza;
+import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
 
-public class Producer {
-    public static void main(String[] args) throws JsonProcessingException, ExecutionException, InterruptedException {
+
+public class MyProducer {
+    public static void produce() {
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         //properties
@@ -32,15 +31,25 @@ public class Producer {
 
 
 
-        /* while(true) {*/
-            String topic = "fleschm-seven";
-            String value = Json.stringify(Json.toJson(generatePizza()));
+        //while(true) {
+            String topic = "fleschm-1";
+            String value = null;
+            try {
+                value = Json.stringify(Json.toJson(generatePizza()));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
             ProducerRecord<String, String> record =
                     new ProducerRecord<String, String>(topic, value);
-            System.out.println(value);
             //Sending data
-            Thread.sleep(10000);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             first_producer.send(record);
+            first_producer.flush();
+       // }
             /*first_producer.send(record, new Callback() {
                 public void onCompletion(RecordMetadata recordMetadata, Exception e) {
 
