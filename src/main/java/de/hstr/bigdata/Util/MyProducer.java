@@ -48,6 +48,7 @@ public class MyProducer {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            
             first_producer.send(record);
             first_producer.flush();
        // }
