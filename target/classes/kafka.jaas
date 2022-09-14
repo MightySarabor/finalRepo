@@ -1,0 +1,14 @@
+KafkaClient {
+   com.sun.security.auth.module.Krb5LoginModule required
+   useTicketCache=true
+   principal="fleschm@BIGDATA.FH-TRIER.DE"
+   renewTicket=true
+   serviceName="kafka";
+};
+Client {
+   com.sun.security.auth.module.Krb5LoginModule required
+   useTicketCache=true
+   principal="fleschm@BIGDATA.FH-TRIER.DE"
+   renewTicket=true
+   serviceName="kafka";
+}; 
