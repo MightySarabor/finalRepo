@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import static de.hstr.bigdata.Util.POJOGenerator.generateOrder;
 import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
 
 
@@ -35,7 +36,7 @@ public class MyProducer {
             String topic = "fleschm-1";
             String value = null;
             try {
-                value = Json.stringify(Json.toJson(generatePizza()));
+                value = Json.stringify(Json.toJson(generateOrder()));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
