@@ -70,7 +70,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.hstr.bigdata.SendProcessExample</mainClass>
+							<mainClass>de.hstr.bigdata.Pipe</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
