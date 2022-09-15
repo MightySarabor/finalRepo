@@ -61,6 +61,10 @@ public class Pipe {
        pizza.filter((name, topping) -> "Hawaii".equals(topping.getName()))
                 .to("fleschm-2", Produced.with(Serdes.String(), new JSONSerde<>()));
 
+        builder.stream("fleschm-2").peek((k, v) -> {
+            System.err.printf("\t --> (%s, %s)\n", k, v);
+        });
+
         //Topology
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
