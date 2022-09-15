@@ -28,7 +28,7 @@ public class Pipe {
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizza");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
                 "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
@@ -46,7 +46,7 @@ public class Pipe {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-pizza",
+        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         pizza.groupBy((k, v) -> v.getName()).count().toStream().to("fleschm-2");
