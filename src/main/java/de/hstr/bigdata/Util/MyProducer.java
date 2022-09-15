@@ -49,8 +49,8 @@ public class MyProducer {
                 throw new RuntimeException(e);
             }
             
-            first_producer.send(record);
-            first_producer.flush();
+            //first_producer.send(record);
+            //first_producer.flush();
        // }
             /*first_producer.send(record, new Callback() {
                 public void onCompletion(RecordMetadata recordMetadata, Exception e) {
