@@ -16,7 +16,7 @@ import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
 
 public class MyProducer {
     public static void produce() {
-        System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
+        //System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         //properties
         String bootstrapServers =
