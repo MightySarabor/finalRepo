@@ -36,20 +36,16 @@ public class MyProducer {
             String topic = "fleschm-pizza";
             String value = null;
             try {
-                value = Json.stringify(Json.toJson(generateOrder()));
+                value = Json.stringify(Json.toJson(generatePizza()));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
             ProducerRecord<String, String> record =
                     new ProducerRecord<String, String>(topic, value);
             //Sending data
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            
-            //first_producer.send(record);
+
+            System.err.println(value);
+            first_producer.send(record);
             //first_producer.flush();
        // }
             /*first_producer.send(record, new Callback() {
@@ -67,5 +63,15 @@ public class MyProducer {
                 }
             }).get();
         } */
+    }
+    public static void main(String[] args) {
+        while(true) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            produce();
+        }
     }
 }

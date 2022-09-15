@@ -1,8 +1,12 @@
 package de.hstr.bigdata.Util.pojos;
 
+import de.hstr.bigdata.PageViewSimpleDemo;
+
 import java.util.List;
 
-public class OrderPOJO {
+public class OrderPOJO implements PageViewSimpleDemo.JSONSerdeCompatible {
+
+    private String _t;
     private String customer;
     private List<PizzaPOJO> pizzas;
 
@@ -10,6 +14,7 @@ public class OrderPOJO {
 
     }
     public OrderPOJO(String customer, List pizzas){
+        _t = "order";
         this.customer = customer;
         this.pizzas = pizzas;
     }

@@ -7,7 +7,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
+import de.hstr.bigdata.Util.pojos.OrderPOJO;
+import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -48,10 +51,10 @@ public class Pipe {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PageViewSimpleDemo.PageView> views = builder.stream("fleschm-pizza",
-                Consumed.with(Serdes.String(), new PageViewSimpleDemo.JSONSerde<>()));
+        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-pizza",
+                Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        views.groupBy((k, v) -> v.user)
+        pizza.groupBy((k, v) -> v.getName())
                 .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
                 .count().toStream()
                 .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); })
