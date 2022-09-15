@@ -38,9 +38,9 @@ public class Pipe {
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
 
-        props.put("security.protocol", "SASL_PLAINTEXT");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
+        //props.put("security.protocol", "SASL_PLAINTEXT");
+        //props.put("enable.auto.commit", "true");
+        //props.put("auto.commit.interval.ms", "1000");
         if (args.length < 1) {
             throw new IllegalArgumentException("This program takes one argument: the path to a configuration file.");
         }
