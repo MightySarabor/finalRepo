@@ -1,5 +1,7 @@
 package de.hstr.bigdata;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -21,24 +23,29 @@ import org.apache.kafka.streams.kstream.KStream;
  */
 public class Pipe {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         System.err.println("Pipe.java");
         
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        //props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
+        //props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
+        //       "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
+        //props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        //props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
 
-        props.put("security.protocol", "SASL_PLAINTEXT");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
-
+        //props.put("security.protocol", "SASL_PLAINTEXT");
+        //props.put("enable.auto.commit", "true");
+        //props.put("auto.commit.interval.ms", "1000");
+        if (args.length < 1) {
+            throw new IllegalArgumentException("This program takes one argument: the path to a configuration file.");
+        }
+        try (InputStream inputStream = new FileInputStream(args[0])) {
+            props.load(inputStream);
+        }
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(MyProducer::produce, 1, 1, TimeUnit.SECONDS);
 
