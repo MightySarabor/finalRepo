@@ -15,6 +15,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Produced;
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
@@ -37,9 +38,9 @@ public class Pipe {
         //props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
 
-        //props.put("security.protocol", "SASL_PLAINTEXT");
-        //props.put("enable.auto.commit", "true");
-        //props.put("auto.commit.interval.ms", "1000");
+        props.put("security.protocol", "SASL_PLAINTEXT");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
         if (args.length < 1) {
             throw new IllegalArgumentException("This program takes one argument: the path to a configuration file.");
         }
@@ -56,8 +57,9 @@ public class Pipe {
         final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        pizza.groupBy((k, v) -> v.getName()).count().toStream().to("fleschm-2");
 
+       pizza.filter((name, topping) -> "Hawaii".equals(topping.getName()))
+                .to("fleschm-2", Produced.with(Serdes.String(), new JSONSerde<>()));
 
         //Topology
         final Topology topology = builder.build();
