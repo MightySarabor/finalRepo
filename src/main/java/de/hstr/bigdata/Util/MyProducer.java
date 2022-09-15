@@ -33,7 +33,7 @@ public class MyProducer {
 
 
         //while(true) {
-            String topic = "fleschm-1";
+            String topic = "fleschm-pv";
             String value = null;
             try {
                 value = Json.stringify(Json.toJson(generateOrder()));
