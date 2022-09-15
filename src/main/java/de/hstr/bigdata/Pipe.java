@@ -54,7 +54,7 @@ public class Pipe {
         final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        pizza.groupBy((k, v) -> v.getName()).count().toStream().to("fleschm-2");
+        //pizza.groupBy((k, v) -> v.getName()).count().toStream().to("fleschm-2");
 
 
         //Topology
