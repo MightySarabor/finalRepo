@@ -54,12 +54,8 @@ public class Pipe {
         final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        pizza.groupBy((k, v) -> v.getName())
-                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
-                .count().toStream()
-                .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); })
-                .map((k, v) -> new KeyValue<>(k.key(), v))
-                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
+        pizza.groupBy((k, v) -> v.getName()).count().toStream().to("fleschm-2");
+
 
         //Topology
         final Topology topology = builder.build();
