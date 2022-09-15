@@ -54,16 +54,12 @@ public class Pipe {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
+        final KStream<String, PizzaPOJO> views = builder.stream("fleschm-final-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
+        views.groupBy((k, v) -> v.getName()).count().toStream().to("my_second");
 
-       pizza.filter((name, topping) -> "Hawaii".equals(topping.getName()))
-                .to("fleschm-2", Produced.with(Serdes.String(), new JSONSerde<>()));
 
-        builder.stream("fleschm-2").peek((k, v) -> {
-            System.err.printf("\t --> (%s)\n", v);
-        });
 
         //Topology
         final Topology topology = builder.build();
