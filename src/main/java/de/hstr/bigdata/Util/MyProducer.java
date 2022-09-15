@@ -2,18 +2,22 @@ package de.hstr.bigdata.Util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.hstr.bigdata.Util.Json.Json;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static de.hstr.bigdata.Util.POJOGenerator.generateOrder;
 import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
 
 
 public class MyProducer {
-    public static void produce() {
+    public static void produce() throws ExecutionException, InterruptedException, TimeoutException {
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         //properties
@@ -33,7 +37,15 @@ public class MyProducer {
 
 
         //while(true) {
-            String topic = "fleschm-pizza";
+            final String inputTopic = props.getProperty("fleschm-final-pizza");
+            createTopics creator = new createTopics();
+            creator.createTopics(
+                    props,
+                    Arrays.asList(
+                            new NewTopic(inputTopic, 2, (short) 2)));
+
+
+
             String value = null;
             try {
                 value = Json.stringify(Json.toJson(generatePizza()));
@@ -41,7 +53,7 @@ public class MyProducer {
                 throw new RuntimeException(e);
             }
             ProducerRecord<String, String> record =
-                    new ProducerRecord<String, String>(topic, value);
+                    new ProducerRecord<String, String>(inputTopic, value);
             //Sending data
 
             //System.err.println(value);
@@ -64,7 +76,7 @@ public class MyProducer {
             }).get();
         } */
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         while(true) {
             try {
                 Thread.sleep(10000);

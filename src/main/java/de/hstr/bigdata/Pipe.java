@@ -1,6 +1,10 @@
 package de.hstr.bigdata;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -9,8 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
+import de.hstr.bigdata.Util.createTopics;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -38,14 +45,13 @@ public class Pipe {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
+
         props.put("security.protocol", "SASL_PLAINTEXT");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(MyProducer::produce, 1, 1, TimeUnit.SECONDS);
-
-
 
         System.err.println("-----Starting Processor-----");
         // Stream Logik
