@@ -159,7 +159,7 @@ public class PageViewSimpleDemo {
     }
 
     @SuppressWarnings("resource")
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         PageView pv = new PageView();
         pv.user = "hans";
         pv.page = "news";
@@ -171,7 +171,7 @@ public class PageViewSimpleDemo {
         System.out.println(deserialize);
     }
 
-    public static void main1(final String[] args) {
+    public static void main(final String[] args) {
         final Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pageview-typed");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -189,7 +189,7 @@ public class PageViewSimpleDemo {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PageView> views = builder.stream("streams-pageview-input",
+        final KStream<String, PageView> views = builder.stream("fleschm-1",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         views.groupBy((k, v) -> v.user)
@@ -197,7 +197,7 @@ public class PageViewSimpleDemo {
                 .count().toStream()
                 .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); })
                 .map((k, v) -> new KeyValue<>(k.key(), v))
-                .to("streams-count-by-user", Produced.with(Serdes.String(), Serdes.Long()));
+                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
         final CountDownLatch latch = new CountDownLatch(1);
