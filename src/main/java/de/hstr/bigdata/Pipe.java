@@ -28,7 +28,7 @@ public class Pipe {
 
         System.err.println("Pipe.java");
         
-        System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
+        //System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         Properties props = new Properties();
         //props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
