@@ -1,10 +1,5 @@
 package de.hstr.bigdata;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -13,17 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
-import de.hstr.bigdata.Util.createTopics;
-import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.SlidingWindows;
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
@@ -32,7 +21,7 @@ import org.apache.kafka.streams.kstream.SlidingWindows;
  */
 public class Pipe {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         System.err.println("Pipe.java");
         
