@@ -62,7 +62,7 @@ public class Pipe {
                 .to("fleschm-2", Produced.with(Serdes.String(), new JSONSerde<>()));
 
         builder.stream("fleschm-2").peek((k, v) -> {
-            System.err.printf("\t --> (%s, %s)\n", k, v);
+            System.err.printf("\t --> (%s)\n", v);
         });
 
         //Topology
