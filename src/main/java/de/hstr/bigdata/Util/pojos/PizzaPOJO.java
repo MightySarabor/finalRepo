@@ -1,8 +1,8 @@
 package de.hstr.bigdata.Util.pojos;
 
-import de.hstr.bigdata.PageViewSimpleDemo;
+import de.hstr.bigdata.Util.Json.JSONSerdeCompatible;
 
-public class PizzaPOJO implements PageViewSimpleDemo.JSONSerdeCompatible {
+public class PizzaPOJO implements JSONSerdeCompatible {
 
     private String _t;
     private String name;

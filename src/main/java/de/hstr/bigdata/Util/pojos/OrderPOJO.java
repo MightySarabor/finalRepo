@@ -1,10 +1,10 @@
 package de.hstr.bigdata.Util.pojos;
 
-import de.hstr.bigdata.PageViewSimpleDemo;
+import de.hstr.bigdata.Util.Json.JSONSerdeCompatible;
 
 import java.util.List;
 
-public class OrderPOJO implements PageViewSimpleDemo.JSONSerdeCompatible {
+public class OrderPOJO implements JSONSerdeCompatible {
 
     private String _t;
     private String customer;

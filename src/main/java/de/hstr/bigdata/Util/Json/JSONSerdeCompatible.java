@@ -2,7 +2,6 @@ package de.hstr.bigdata.Util.Json;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.hstr.bigdata.PageViewSimpleDemo;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 
