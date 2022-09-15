@@ -57,7 +57,8 @@ public class Pipe {
         final KStream<String, PizzaPOJO> views = builder.stream("fleschm-final-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        views.groupBy((k, v) -> v.getName()).count().toStream().to("my_second");
+        views.groupBy((k, v) -> v.getName()).count().toStream()
+                .to("my_second", Produced.with(Serdes.String(), Serdes.Long()));
 
 
 
