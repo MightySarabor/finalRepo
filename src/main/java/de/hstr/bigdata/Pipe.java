@@ -1,5 +1,6 @@
 package de.hstr.bigdata;
 
+import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -8,10 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 import de.hstr.bigdata.Util.MyProducer;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.SlidingWindows;
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
@@ -40,14 +42,23 @@ public class Pipe {
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(MyProducer::produce, 1, 1, TimeUnit.SECONDS);
 
-        final StreamsBuilder builder = new StreamsBuilder();
+
 
         System.err.println("-----Starting Processor-----");
-        
-        builder.stream("fleschm-1")
-                .peek((k, v) -> { System.err.println("Peek: " + v);})
-                .to("fleschm-2");
+        // Stream Logik
+        final StreamsBuilder builder = new StreamsBuilder();
 
+        final KStream<String, PageViewSimpleDemo.PageView> views = builder.stream("fleschm-pizza",
+                Consumed.with(Serdes.String(), new PageViewSimpleDemo.JSONSerde<>()));
+
+        views.groupBy((k, v) -> v.user)
+                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
+                .count().toStream()
+                .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); })
+                .map((k, v) -> new KeyValue<>(k.key(), v))
+                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
+
+        //Topology
         final Topology topology = builder.build();
         final KafkaStreams streams = new KafkaStreams(topology, props);
         final CountDownLatch latch = new CountDownLatch(1);
