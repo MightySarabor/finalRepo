@@ -45,7 +45,7 @@ public class MyProducer {
                     new ProducerRecord<String, String>(inputTopic, value);
             //Sending data
 
-            //System.err.println(value);
+            System.err.println(value);
             first_producer.send(record);
             first_producer.flush();
     }
