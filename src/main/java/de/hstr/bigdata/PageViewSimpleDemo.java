@@ -189,7 +189,7 @@ public class PageViewSimpleDemo {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PageView> views = builder.stream("fleschm-1",
+        final KStream<String, PageView> views = builder.stream("fleschm-pv",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         views.groupBy((k, v) -> v.user)
