@@ -32,7 +32,7 @@ public class MyProducer {
 
         KafkaProducer<String,String> first_producer = new KafkaProducer<String, String>(props);
         final String inputTopic = "fleschm-final-pizza";
-        new NewTopic(inputTopic, 2, (short) 2);
+        //new NewTopic(inputTopic, 2, (short) 2);
 
 
             String value = null;
