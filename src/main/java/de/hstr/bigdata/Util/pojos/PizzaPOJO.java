@@ -55,8 +55,7 @@ public class PizzaPOJO implements JSONSerdeCompatible {
     @Override
     public String toString() {
         return "PizzaPOJO{" +
-                "_t='" + _t + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
                 '}';
