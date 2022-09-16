@@ -75,6 +75,7 @@ public class MyProducer {
         ProducerRecord<String, String> record =
                     new ProducerRecord<String, String>(PIZZA_TOPIC, value);
             //Sending data
+            System.err.println(value);
             my_producer.send(record);
             my_producer.flush();
     }

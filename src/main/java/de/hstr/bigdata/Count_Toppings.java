@@ -57,7 +57,7 @@ public class Count_Toppings {
         final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        //pizza.peek((k, pv) -> System.err.println(pv.getName()));
+        pizza.peek((k, pv) -> System.err.println(pv.getName()));
 
         pizza.groupBy((k, v) -> v.getName()).count().toStream()
                 .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
