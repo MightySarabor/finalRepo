@@ -15,7 +15,7 @@ public class MyProducer {
 
     private static final String PIZZA_TOPIC = "fleschm-final-pizza";
     private static final String ORDER_TOPIC = "fleschm-final-order";
-    private static final int NUMBER_OF_CUSTOMERS = 2;
+    private static final int NUMBER_OF_CUSTOMERS = 100;
 
 
     public static KafkaProducer clusterProducer(){
@@ -79,7 +79,7 @@ public class MyProducer {
             my_producer.flush();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main1(String[] args) throws InterruptedException {
         while(true){
             Thread.sleep(5000);
             produceOrder();
