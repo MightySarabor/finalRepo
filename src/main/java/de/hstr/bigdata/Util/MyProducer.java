@@ -15,7 +15,7 @@ public class MyProducer {
 
     private static final String PIZZA_TOPIC = "fleschm-final-pizza";
     private static final String ORDER_TOPIC = "fleschm-final-order";
-    private static final int NUMBER_OF_CUSTOMERS = 500;
+    private static final int NUMBER_OF_CUSTOMERS = 5;
 
 
     public static KafkaProducer clusterProducer(){
