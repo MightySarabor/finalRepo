@@ -26,6 +26,10 @@ public class MyProducer {
         props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
+        props.put("security.protocol", "SASL_PLAINTEXT");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+
         KafkaProducer<String,String> first_producer = new KafkaProducer<String, String>(props);
         final String inputTopic = "fleschm-final-pizza";
         //new NewTopic(inputTopic, 2, (short) 2);
@@ -41,9 +45,8 @@ public class MyProducer {
                     new ProducerRecord<String, String>(inputTopic, value);
             //Sending data
 
-            System.err.println(value);
+            //System.err.println(value);
             first_producer.send(record);
-            System.err.println("Message sent");
             first_producer.flush();
     }
 }
