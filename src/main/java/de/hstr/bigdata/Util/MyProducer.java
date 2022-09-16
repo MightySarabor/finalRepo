@@ -52,7 +52,7 @@ public class MyProducer {
         }
 
         ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>(PIZZA_TOPIC, value);
+                new ProducerRecord<String, String>(ORDER_TOPIC, value);
         //Sending data
 
         System.err.println(value);
