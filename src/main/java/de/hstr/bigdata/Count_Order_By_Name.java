@@ -2,6 +2,7 @@ package de.hstr.bigdata;
 
 import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
+import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -11,9 +12,11 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.SlidingWindows;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -57,13 +60,14 @@ public class Count_Order_By_Name {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
+        final KStream<String, OrderPOJO> orders = builder.stream("fleschm-final-order",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        //pizza.peek((k, pv) -> System.err.println(pv.getName()));
+        orders.groupBy((k, v) -> v.getCustomer())
+                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
+                .count().toStream()
+                .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
 
-        pizza.groupBy((k, v) -> v.getName()).count().toStream()
-                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
 
         //Topology
         final Topology topology = builder.build();
