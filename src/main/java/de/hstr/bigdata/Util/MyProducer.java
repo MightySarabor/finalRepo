@@ -43,6 +43,7 @@ public class MyProducer {
 
             System.err.println(value);
             first_producer.send(record);
+            System.err.println("Message sent");
             first_producer.flush();
     }
 }
