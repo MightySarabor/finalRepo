@@ -54,7 +54,7 @@ public class Count_Toppings {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
+        final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizzas",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         pizza.peek((k, pv) -> System.err.println(pv.getName()));
