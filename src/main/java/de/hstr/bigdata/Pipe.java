@@ -58,7 +58,7 @@ public class Pipe {
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         views.groupBy((k, v) -> v.getName()).count().toStream()
-                .to("my_second", Produced.with(Serdes.String(), Serdes.Long()));
+                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
 
 
 
