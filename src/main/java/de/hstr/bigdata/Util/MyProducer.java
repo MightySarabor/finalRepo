@@ -55,7 +55,7 @@ public class MyProducer {
                 new ProducerRecord<String, String>(ORDER_TOPIC, value);
         //Sending data
 
-        System.err.println(value);
+        //System.err.println(value);
         my_producer.send(record);
         my_producer.flush();
     }
@@ -80,7 +80,7 @@ public class MyProducer {
             my_producer.flush();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main1(String[] args) throws InterruptedException {
         while(true){
             Thread.sleep(5000);
             produceOrder();
