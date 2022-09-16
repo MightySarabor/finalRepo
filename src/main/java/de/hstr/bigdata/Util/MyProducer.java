@@ -13,8 +13,9 @@ import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
 
 public class MyProducer {
 
-    private static final String pizzaTopic = "fleschm-final-pizza";
-    private static final String orderTopic = "fleschm-final-order";
+    private static final String PIZZA_TOPIC = "fleschm-final-pizza";
+    private static final String ORDER_TOPIC = "fleschm-final-order";
+    private static final int NUMBER_OF_CUSTOMERS = 500;
 
 
     public static KafkaProducer clusterProducer(){
@@ -45,13 +46,13 @@ public class MyProducer {
         //generate OrderString
 
         try {
-            value = Json.stringify(Json.toJson(generateOrder()));
+            value = Json.stringify(Json.toJson(generateOrder(NUMBER_OF_CUSTOMERS)));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
         ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>(pizzaTopic, value);
+                new ProducerRecord<String, String>(PIZZA_TOPIC, value);
         //Sending data
 
         //System.err.println(value);
@@ -72,7 +73,7 @@ public class MyProducer {
         }
 
         ProducerRecord<String, String> record =
-                    new ProducerRecord<String, String>(pizzaTopic, value);
+                    new ProducerRecord<String, String>(PIZZA_TOPIC, value);
             //Sending data
             my_producer.send(record);
             my_producer.flush();

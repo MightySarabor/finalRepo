@@ -2,11 +2,13 @@ package de.hstr.bigdata.Util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
+import de.hstr.bigdata.Util.Json.Json;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class POJOGenerator {
@@ -15,20 +17,35 @@ public class POJOGenerator {
     final static private String[] sizes ={"S", "M", "L"};
     final static private float[] prices = {6.5F, 9.5F, 12.5F};
 
-    public static OrderPOJO generateOrder(){
+    // Function select an element base on index
+    // and return an element
+    public static String getRandomCustomer(List<String> list)
+    {
+        int randomIndex = (int) (Math.random() * list.size());
+        return list.get(randomIndex);
+    }
+    public final static List<String> generateCustomer(int number_of_customers){
         Faker faker = new Faker();
+        List<String> names = new ArrayList<String>();
+        for(int i = 0; i <=  number_of_customers; i++){
+            String name = faker.name().fullName();
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            names.add(name);
+        }
 
-        String name = faker.name().fullName();
-        String firstName = faker.name().firstName();
-        String lastName = faker.name().lastName();
+        return names;
+    }
+    public static OrderPOJO generateOrder(int number_of_customers){
 
+        List<String> names = generateCustomer(number_of_customers);
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
         int numerOfOrders = ThreadLocalRandom.current().nextInt(0, 5);
         for(int i = 0; i <= numerOfOrders; i++)
         {
             pizzas.add(generatePizza());
         }
-        return new OrderPOJO(name, pizzas);
+        return new OrderPOJO(getRandomCustomer(names), pizzas);
     }
 
     public static PizzaPOJO generatePizza(){
@@ -40,9 +57,9 @@ public class POJOGenerator {
     public static void main(String[] args) throws JsonProcessingException {
 
         for(int i = 0; i <= 100000; i++) {
-            //System.out.println(Json.prettyPrint(Json.toJson(generateOrder())));
-            generateOrder();
-            System.out.println(i);
+            System.out.println(Json.prettyPrint(Json.toJson(generateOrder(500).getCustomer())));
+            //generateOrder(500);
+            //System.out.println(i);
             
         }
     }
