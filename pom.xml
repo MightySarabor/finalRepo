@@ -70,7 +70,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.hstr.bigdata.Pipe</mainClass>
+							<mainClass>de.hstr.bigdata.Count_Toppings</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

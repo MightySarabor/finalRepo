@@ -1,5 +1,17 @@
 package de.hstr.bigdata;
 
+import de.hstr.bigdata.Util.Json.JSONSerde;
+import de.hstr.bigdata.Util.MyProducer;
+import de.hstr.bigdata.Util.pojos.PizzaPOJO;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Produced;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -8,26 +20,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import de.hstr.bigdata.Util.Json.JSONSerde;
-import de.hstr.bigdata.Util.MyProducer;
-import de.hstr.bigdata.Util.pojos.PizzaPOJO;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.*;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
-
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
  * that reads from a source topic "streams-plaintext-input", where the values of messages represent lines of text,
  * and writes the messages as-is into a sink topic "streams-pipe-output".
  */
-public class Pipe {
+public class Count_Order_By_Name {
 
     public static void main(String[] args) throws Exception {
 
-        System.err.println("Pipe.java");
-        
+        System.err.println("Count_Order_By_Name.java");
+
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         Properties props = new Properties();
@@ -48,7 +51,7 @@ public class Pipe {
             props.load(inputStream);
         }
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(MyProducer::produce, 1, 1, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(MyProducer::producePizza, 1, 1, TimeUnit.SECONDS);
 
         System.err.println("-----Starting Processor-----");
         // Stream Logik
@@ -57,12 +60,10 @@ public class Pipe {
         final KStream<String, PizzaPOJO> pizza = builder.stream("fleschm-final-pizza",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        pizza.peek((k, pv) -> System.err.println(pv.getName()));
+        //pizza.peek((k, pv) -> System.err.println(pv.getName()));
 
         pizza.groupBy((k, v) -> v.getName()).count().toStream()
                 .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
-
-
 
         //Topology
         final Topology topology = builder.build();

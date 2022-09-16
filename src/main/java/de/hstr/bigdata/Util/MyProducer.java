@@ -2,20 +2,22 @@ package de.hstr.bigdata.Util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.hstr.bigdata.Util.Json.Json;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 import static de.hstr.bigdata.Util.POJOGenerator.generateOrder;
 import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
 
 
 public class MyProducer {
-    public static void produce() {
+
+    private static final String pizzaTopic = "fleschm-final-pizza";
+    private static final String orderTopic = "fleschm-final-order";
+
+
+    public static KafkaProducer clusterProducer(){
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
         //properties
@@ -30,23 +32,49 @@ public class MyProducer {
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
 
-        KafkaProducer<String,String> first_producer = new KafkaProducer<String, String>(props);
-        final String inputTopic = "fleschm-final-pizza";
-        //new NewTopic(inputTopic, 2, (short) 2);
+        KafkaProducer<String,String> my_producer =
+                new KafkaProducer<String, String>(props);
 
+        return my_producer;
+    }
+    public static void produceOrder(){
+        KafkaProducer my_producer = clusterProducer();
 
+        String value = null;
+
+        //generate OrderString
+
+        try {
+            value = Json.stringify(Json.toJson(generateOrder()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        ProducerRecord<String, String> record =
+                new ProducerRecord<String, String>(pizzaTopic, value);
+        //Sending data
+
+        //System.err.println(value);
+        my_producer.send(record);
+        my_producer.flush();
+    }
+
+    public static void producePizza() {
+
+            KafkaProducer my_producer = clusterProducer();
             String value = null;
-            try {
-                value = Json.stringify(Json.toJson(generatePizza()));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-            ProducerRecord<String, String> record =
-                    new ProducerRecord<String, String>(inputTopic, value);
-            //Sending data
+            //generate PizzaString
 
-            //System.err.println(value);
-            first_producer.send(record);
-            first_producer.flush();
+        try {
+            value = Json.stringify(Json.toJson(generatePizza()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        ProducerRecord<String, String> record =
+                    new ProducerRecord<String, String>(pizzaTopic, value);
+            //Sending data
+            my_producer.send(record);
+            my_producer.flush();
     }
 }
