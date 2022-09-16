@@ -55,7 +55,7 @@ public class MyProducer {
                 new ProducerRecord<String, String>(PIZZA_TOPIC, value);
         //Sending data
 
-        //System.err.println(value);
+        System.err.println(value);
         my_producer.send(record);
         my_producer.flush();
     }
@@ -83,6 +83,7 @@ public class MyProducer {
         while(true){
             Thread.sleep(5000);
             produceOrder();
+            System.out.println("Sent Record");
         }
 
     }
