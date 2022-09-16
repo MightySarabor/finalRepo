@@ -60,13 +60,13 @@ public class Count_Order_By_Name {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, OrderPOJO> orders = builder.stream("fleschm-final-order",
+        final KStream<String, OrderPOJO> pizza = builder.stream("fleschm-final-order",
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-        orders.groupBy((k, v) -> v.getCustomer())
-                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
-                .count().toStream()
-                .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
+        pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
+
+        pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
+                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
 
 
         //Topology
