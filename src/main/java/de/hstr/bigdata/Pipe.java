@@ -59,8 +59,8 @@ public class Pipe {
 
         pizza.peek((k, pv) -> System.err.println(pv.getName()));
 
-        //pizza.groupBy((k, v) -> v.getName()).count().toStream()
-                //.to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
+        pizza.groupBy((k, v) -> v.getName()).count().toStream()
+                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
 
 
 
