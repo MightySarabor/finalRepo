@@ -4,14 +4,10 @@ import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
 import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
-import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
@@ -19,9 +15,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded;
-import static org.apache.kafka.streams.kstream.Suppressed.untilWindowCloses;
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
@@ -92,7 +85,7 @@ public class Count_Order_By_Name {
 
             return builder.build();
         }
-    static Topology countOrderwithWindow(String inputTopic, String outputTopic) {
+    static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
         System.err.println("Count_Order_By_Name.java");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
@@ -118,7 +111,18 @@ public class Count_Order_By_Name {
 
         return builder.build();
     }
+    static Topology countCustomerInWindow(String inputTopic, String outputTopic){
+        System.err.println("Count_Order_By_Name_in_Window.java");
+        // Stream Logik
+        final StreamsBuilder builder = new StreamsBuilder();
+        final KStream<String, OrderPOJO> views = builder.stream(inputTopic,
+                Consumed.with(Serdes.String(), new JSONSerde<>()));
 
+        views.groupBy((k, v) -> v.getCustomer())
+                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
+                .count().toStream()
+                .peek((k, v) -> { System.err.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
+    }
     public static void main(String[] args) throws Exception {
 
         List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
@@ -128,7 +132,7 @@ public class Count_Order_By_Name {
         Properties props = setProps(false);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                countOrderwithWindow("fleschm-final-order", "fleschm-2"),
+                aggregatePizzaByCustomer("fleschm-final-order", "fleschm-2"),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
