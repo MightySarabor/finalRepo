@@ -105,15 +105,15 @@ public class Count_Order_By_Name {
                 .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(15)))
                 .aggregate(() -> 0.0,
                         (key, order, total) -> total + order.getPizzas().size(),
-                        Materialized.with(Serdes.String(), Serdes.Double()))
+                        Materialized.with(Serdes.String(), Serdes.Double()>))
                 // Don't emit results until the window closes HINT suppression
                 .toStream()
                 // When windowing Kafka Streams wraps the key in a Windowed class
                 // After converting the table to a stream it's a good idea to extract the
                 // Underlying key from the Windowed instance HINT: use map
-                .map((wk, value) -> KeyValue.pair(wk.key(),value))
-                .peek((key, value) -> System.out.println("Outgoing record - key " +key +" value " + value))
-                .to(outputTopic, Produced.with(Serdes.String(), Serdes.Double()));
+                //.map((wk, value) -> KeyValue.pair(wk.key(),value))
+                .peek((key, value) -> System.out.println("Outgoing record - key " +key +" value " + value));
+                //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Double()));
 
 
         return builder.build();
