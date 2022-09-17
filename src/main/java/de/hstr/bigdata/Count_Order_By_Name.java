@@ -119,9 +119,10 @@ public class Count_Order_By_Name {
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         views.groupBy((k, v) -> v.getCustomer())
-                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
+                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofMinutes(5), Duration.ofSeconds(60)))
                 .count().toStream()
-                .peek((k, v) -> { System.err.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
+                .map((wk, value) -> KeyValue.pair(wk.key(),value))
+                .to(outputTopic, Produced.with(Serdes.String(),Serdes.Long()));
         return builder.build();
     }
 
