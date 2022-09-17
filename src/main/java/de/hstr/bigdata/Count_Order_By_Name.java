@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * and writes the messages as-is into a sink topic "streams-pipe-output".
  */
 public class Count_Order_By_Name {
-    private static final int NUMBER_OF_CUSTOMERS = 5;
+    private static final int NUMBER_OF_CUSTOMERS = 2;
     public static void main(String[] args) throws Exception {
 
         System.err.println("Count_Order_By_Name.java");
