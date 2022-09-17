@@ -4,15 +4,10 @@ import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
 import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
+import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.SlidingWindows;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,6 +19,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded;
+import static org.apache.kafka.streams.kstream.Suppressed.untilWindowCloses;
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
@@ -100,13 +98,24 @@ public class Count_Order_By_Name {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, OrderPOJO> views = builder.stream(inputTopic,
-                Consumed.with(Serdes.String(), new JSONSerde<>()));
+        final KStream<String, OrderPOJO> orderStream =
+                builder.stream(inputTopic, Consumed.with(Serdes.String(), new JSONSerde()))
+                        .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value));
+        orderStream
+                .groupByKey()
+                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(15), Duration.ofMinutes(3)))
+                .aggregate(() -> 0.0,
+                        (key, order, total) -> total + order.getPizzas().size(),
+                        Materialized.with(Serdes.String(), Serdes.Double()))
+                // Don't emit results until the window closes HINT suppression
+                .toStream()
+                // When windowing Kafka Streams wraps the key in a Windowed class
+                // After converting the table to a stream it's a good idea to extract the
+                // Underlying key from the Windowed instance HINT: use map
+                .map((wk, value) -> KeyValue.pair(wk.key(),value))
+                .peek((key, value) -> System.out.println("Outgoing record - key " +key +" value " + value))
+                .to(outputTopic, Produced.with(Serdes.String(), Serdes.Double()));
 
-        views.groupBy((k, v) -> v.getCustomer())
-                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
-                .count().toStream()
-                .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
 
         return builder.build();
     }
