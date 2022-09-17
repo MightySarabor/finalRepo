@@ -134,7 +134,7 @@ public class Count_Order_By_Name {
         Properties props = setProps(false);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                aggregatePizzaByCustomer("fleschm-final-order", "fleschm-2"),
+                countCustomerInWindow("fleschm-final-order", "fleschm-2"),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
