@@ -5,6 +5,7 @@ import de.hstr.bigdata.Util.MyProducer;
 import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -14,6 +15,8 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.SlidingWindows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,85 +37,85 @@ import java.util.concurrent.TimeUnit;
 public class Count_Order_By_Name {
     private static final int NUMBER_OF_CUSTOMERS = 2;
 
-    public static Properties setProps(String[] args){
+    public class KafkaStreamsApplication {
+        static void runKafkaStreams(final KafkaStreams streams) {
+            final CountDownLatch latch = new CountDownLatch(1);
+            streams.setStateListener((newState, oldState) -> {
+                if (oldState == KafkaStreams.State.RUNNING && newState != KafkaStreams.State.RUNNING) {
+                    latch.countDown();
+                }
+            });
 
+            streams.start();
 
-        System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
+            try {
+                latch.await();
+            } catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
-        Properties props = new Properties();
-        //props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
-        //props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-        //       "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-
-
-        props.put("security.protocol", "SASL_PLAINTEXT");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
-        if (args.length < 1) {
-            throw new IllegalArgumentException("This program takes one argument: the path to a configuration file.");
+            System.err.println("Streams Closed");
         }
-        try (InputStream inputStream = new FileInputStream(args[0])) {
-            props.load(inputStream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        public static Properties setProps(String[] args){
+
+
+            System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
+
+            Properties props = new Properties();
+            //props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
+            //props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
+            //       "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
+            props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+            props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+
+            props.put("security.protocol", "SASL_PLAINTEXT");
+            props.put("enable.auto.commit", "true");
+            props.put("auto.commit.interval.ms", "1000");
+            if (args.length < 1) {
+                throw new IllegalArgumentException("This program takes one argument: the path to a configuration file.");
+            }
+            try (InputStream inputStream = new FileInputStream(args[0])) {
+                props.load(inputStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return props;
+        }
+        static Topology buildTopology(String inputTopic, String outputTopic) {
+            System.err.println("Count_Order_By_Name.java");
+            System.err.println("-----Starting Processor-----");
+            // Stream Logik
+            final StreamsBuilder builder = new StreamsBuilder();
+
+            final KStream<String, OrderPOJO> pizza = builder.stream(inputTopic,
+                    Consumed.with(Serdes.String(), new JSONSerde<>()));
+
+            pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
+
+            pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
+                    .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+
+            return builder.build();
         }
 
-        return props;
-    }
-
-    public static StreamsBuilder orderByName(){
-        System.err.println("Count_Order_By_Name.java");
-        System.err.println("-----Starting Processor-----");
-        // Stream Logik
-        final StreamsBuilder builder = new StreamsBuilder();
-
-        final KStream<String, OrderPOJO> pizza = builder.stream("fleschm-final-order",
-                Consumed.with(Serdes.String(), new JSONSerde<>()));
-
-        pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
-
-        pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
-                .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
-
-        return builder;
-
-    }
-    public static Topology buildTopology(StreamsBuilder builder, String[] args){
-        //Topology
-        final Topology topology = builder.build();
-        final KafkaStreams streams = new KafkaStreams(topology, setProps(args));
-        return topology;
-    }
     public static void main(String[] args) throws Exception {
 
         List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 5, TimeUnit.SECONDS);
+        Properties props = setProps(args);
 
-        StreamsBuilder builder = orderByName();
+        KafkaStreams kafkaStreams = new KafkaStreams(
+                buildTopology("fleschm-final-order", "fleschm-2"),
+                props);
 
-        buildTopology(builder, args);
+        Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
 
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        // attach shutdown handler to catch control-c
-        Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
-            @Override
-            public void run() {
-                streams.close();
-                latch.countDown();
-            }
-        });
-
-        try {
-            streams.start();
-            latch.await();
-        } catch (Throwable e) {
-            System.exit(1);
+        System.err.println("Kafka Streams 101 App Started");
+        runKafkaStreams(kafkaStreams);
         }
-        System.exit(0);
+        }
     }
-}
