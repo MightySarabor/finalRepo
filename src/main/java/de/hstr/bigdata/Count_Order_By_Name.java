@@ -16,6 +16,7 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.SlidingWindows;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
@@ -32,9 +33,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class Count_Order_By_Name {
     private static final int NUMBER_OF_CUSTOMERS = 2;
-    public static void main(String[] args) throws Exception {
 
-        System.err.println("Count_Order_By_Name.java");
+    public static Properties setProps(String[] args){
+
 
         System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
@@ -54,13 +55,15 @@ public class Count_Order_By_Name {
         }
         try (InputStream inputStream = new FileInputStream(args[0])) {
             props.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
+        return props;
+    }
 
-        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 5, TimeUnit.SECONDS);
-
+    public static StreamsBuilder orderByName(){
+        System.err.println("Count_Order_By_Name.java");
         System.err.println("-----Starting Processor-----");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
@@ -73,10 +76,26 @@ public class Count_Order_By_Name {
         pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
                 .to("fleschm-2", Produced.with(Serdes.String(), Serdes.Long()));
 
+        return builder;
 
+    }
+    public static Topology buildTopology(StreamsBuilder builder, String[] args){
         //Topology
         final Topology topology = builder.build();
-        final KafkaStreams streams = new KafkaStreams(topology, props);
+        final KafkaStreams streams = new KafkaStreams(topology, setProps(args));
+        return topology;
+    }
+    public static void main(String[] args) throws Exception {
+
+        List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
+
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 5, TimeUnit.SECONDS);
+
+        StreamsBuilder builder = orderByName();
+
+        buildTopology(builder, args);
+
         final CountDownLatch latch = new CountDownLatch(1);
 
         // attach shutdown handler to catch control-c
