@@ -2,6 +2,7 @@ package de.hstr.bigdata;
 
 import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
+import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
@@ -17,6 +18,7 @@ import org.apache.kafka.streams.kstream.SlidingWindows;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -53,8 +55,11 @@ public class Count_Order_By_Name {
         try (InputStream inputStream = new FileInputStream(args[0])) {
             props.load(inputStream);
         }
+
+        List customers = POJOGenerator.generateCustomer(30);
+
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(3), 1, 1, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 1, TimeUnit.SECONDS);
 
         System.err.println("-----Starting Processor-----");
         // Stream Logik

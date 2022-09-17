@@ -5,6 +5,7 @@ import de.hstr.bigdata.Util.Json.Json;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.util.List;
 import java.util.Properties;
 
 import static de.hstr.bigdata.Util.POJOGenerator.generateOrder;
@@ -15,7 +16,6 @@ public class MyProducer {
 
     private static final String PIZZA_TOPIC = "fleschm-final-pizzas";
     private static final String ORDER_TOPIC = "fleschm-final-order";
-    private static final int NUMBER_OF_CUSTOMERS = 30;
 
 
     public static KafkaProducer clusterProducer(){
@@ -38,7 +38,7 @@ public class MyProducer {
 
         return my_producer;
     }
-    public static void produceOrder(int test){
+    public static void produceOrder(List customers){
         KafkaProducer my_producer = clusterProducer();
 
         String value = null;
@@ -46,7 +46,7 @@ public class MyProducer {
         //generate OrderString
         while(true){
         try {
-            value = Json.stringify(Json.toJson(generateOrder(NUMBER_OF_CUSTOMERS)));
+            value = Json.stringify(Json.toJson(generateOrder(customers)));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -55,7 +55,7 @@ public class MyProducer {
                 new ProducerRecord<String, String>(ORDER_TOPIC, value);
         //Sending data
 
-        System.err.println(test);
+
         my_producer.send(record);
         my_producer.flush();
         }
@@ -84,7 +84,7 @@ public class MyProducer {
     public static void main1(String[] args) throws InterruptedException {
         while(true){
             Thread.sleep(5000);
-            produceOrder(3);
+            //produceOrder();
             System.out.println("Sent Record");
         }
 
