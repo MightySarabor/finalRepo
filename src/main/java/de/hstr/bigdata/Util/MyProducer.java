@@ -15,7 +15,7 @@ public class MyProducer {
 
     private static final String PIZZA_TOPIC = "fleschm-final-pizzas";
     private static final String ORDER_TOPIC = "fleschm-final-order";
-    private static final int NUMBER_OF_CUSTOMERS = 3;
+    private static final int NUMBER_OF_CUSTOMERS = 30;
 
 
     public static KafkaProducer clusterProducer(){
@@ -38,13 +38,13 @@ public class MyProducer {
 
         return my_producer;
     }
-    public static void produceOrder(){
+    public static void produceOrder(int test){
         KafkaProducer my_producer = clusterProducer();
 
         String value = null;
 
         //generate OrderString
-
+        while(true){
         try {
             value = Json.stringify(Json.toJson(generateOrder(NUMBER_OF_CUSTOMERS)));
         } catch (JsonProcessingException e) {
@@ -55,9 +55,10 @@ public class MyProducer {
                 new ProducerRecord<String, String>(ORDER_TOPIC, value);
         //Sending data
 
-        //System.err.println(value);
+        System.err.println(test);
         my_producer.send(record);
         my_producer.flush();
+        }
     }
 
     public static void producePizza() {
@@ -83,7 +84,7 @@ public class MyProducer {
     public static void main1(String[] args) throws InterruptedException {
         while(true){
             Thread.sleep(5000);
-            produceOrder();
+            produceOrder(3);
             System.out.println("Sent Record");
         }
 
