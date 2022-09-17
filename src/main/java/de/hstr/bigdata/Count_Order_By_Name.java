@@ -100,7 +100,7 @@ public class Count_Order_By_Name {
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final KStream<String, OrderPOJO> views = builder.stream("streams-pageview-input",
+        final KStream<String, OrderPOJO> views = builder.stream(inputTopic,
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
         views.groupBy((k, v) -> v.getCustomer())
