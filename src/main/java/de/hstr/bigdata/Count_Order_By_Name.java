@@ -94,7 +94,6 @@ public class Count_Order_By_Name {
         }
     static Topology countOrderwithWindow(String inputTopic, String outputTopic) {
         System.err.println("Count_Order_By_Name.java");
-        System.err.println("-----Starting Processor-----");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
 
@@ -103,7 +102,7 @@ public class Count_Order_By_Name {
                         .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value));
         orderStream
                 .groupByKey()
-                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(15), Duration.ofMinutes(3)))
+                .windowedBy(TimeWindows.ofSizeAndGrace(Duration.ofMinutes(1), Duration.ofSeconds(15)))
                 .aggregate(() -> 0.0,
                         (key, order, total) -> total + order.getPizzas().size(),
                         Materialized.with(Serdes.String(), Serdes.Double()))
