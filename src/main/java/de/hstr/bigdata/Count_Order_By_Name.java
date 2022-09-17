@@ -122,7 +122,9 @@ public class Count_Order_By_Name {
                 .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
                 .count().toStream()
                 .peek((k, v) -> { System.err.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
+        return builder.build();
     }
+
     public static void main(String[] args) throws Exception {
 
         List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
