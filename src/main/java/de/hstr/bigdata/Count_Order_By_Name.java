@@ -49,31 +49,31 @@ public class Count_Order_By_Name {
 
             System.err.println("Streams Closed");
         }
-        public static Properties setProps(String[] args){
-
-
-            System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
-
+        public static Properties setProps(boolean cluster){
             Properties props = new Properties();
-            //props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
-            //props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-            //       "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
-            props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-            props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+            if(cluster) {
+                System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
 
-            props.put("security.protocol", "SASL_PLAINTEXT");
-            props.put("enable.auto.commit", "true");
-            props.put("auto.commit.interval.ms", "1000");
-            if (args.length < 1) {
-                throw new IllegalArgumentException("This program takes one argument: the path to a configuration file.");
+                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
+                props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
+                       "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
+                props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+                props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+
+                props.put("security.protocol", "SASL_PLAINTEXT");
+                props.put("enable.auto.commit", "true");
+                props.put("auto.commit.interval.ms", "1000");
+
             }
-            try (InputStream inputStream = new FileInputStream(args[0])) {
-                props.load(inputStream);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            else{
+                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
+                props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+                props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+                props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
+            }
             return props;
         }
         static Topology countOrderByName(String inputTopic, String outputTopic) {
@@ -125,8 +125,8 @@ public class Count_Order_By_Name {
         List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 5, TimeUnit.SECONDS);
-        Properties props = setProps(args);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers, false), 1, 5, TimeUnit.SECONDS);
+        Properties props = setProps(false);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
                 countOrderwithWindow("fleschm-final-order", "fleschm-2"),
