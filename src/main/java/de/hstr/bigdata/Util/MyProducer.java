@@ -10,8 +10,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import java.util.List;
 import java.util.Properties;
 
-import static de.hstr.bigdata.Util.POJOGenerator.generateOrder;
-import static de.hstr.bigdata.Util.POJOGenerator.generatePizza;
+import static de.hstr.bigdata.Util.POJOGenerator.*;
 
 
 public class MyProducer {
@@ -89,10 +88,11 @@ public class MyProducer {
             my_producer.flush();
     }
 
-    public static void main1(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
+        List customers = generateCustomer(3);
         while(true){
             Thread.sleep(5000);
-            //produceOrder();
+            produceOrder(customers, false);
             System.out.println("Sent Record");
         }
 
