@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 public class Count_Order_By_Name {
     private static final int NUMBER_OF_CUSTOMERS = 2;
 
-    public class KafkaStreamsApplication {
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
             streams.setStateListener((newState, oldState) -> {
@@ -117,5 +116,4 @@ public class Count_Order_By_Name {
         System.err.println("Kafka Streams 101 App Started");
         runKafkaStreams(kafkaStreams);
         }
-        }
-    }
+}

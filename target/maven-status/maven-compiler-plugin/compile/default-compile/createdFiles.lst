@@ -1,0 +1,10 @@
+de\hstr\bigdata\Count_Toppings$1.class
+de\hstr\bigdata\Util\POJOGenerator.class
+de\hstr\bigdata\Util\Json\Json.class
+de\hstr\bigdata\Util\MyProducer.class
+de\hstr\bigdata\Util\pojos\PizzaPOJO.class
+de\hstr\bigdata\Util\Json\JSONSerde.class
+de\hstr\bigdata\Count_Toppings.class
+de\hstr\bigdata\Util\Json\JSONSerdeCompatible.class
+de\hstr\bigdata\StreamExample.class
+de\hstr\bigdata\Util\pojos\OrderPOJO.class
