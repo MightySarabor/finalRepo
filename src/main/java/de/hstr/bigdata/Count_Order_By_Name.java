@@ -4,8 +4,6 @@ import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
 import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
-import de.hstr.bigdata.Util.pojos.PizzaPOJO;
-import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -15,8 +13,6 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.SlidingWindows;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -82,7 +78,7 @@ public class Count_Order_By_Name {
 
             return props;
         }
-        static Topology buildTopology(String inputTopic, String outputTopic) {
+        static Topology countOrderByName(String inputTopic, String outputTopic) {
             System.err.println("Count_Order_By_Name.java");
             System.err.println("-----Starting Processor-----");
             // Stream Logik
@@ -98,6 +94,22 @@ public class Count_Order_By_Name {
 
             return builder.build();
         }
+    static Topology countOrderwithWindow(String inputTopic, String outputTopic) {
+        System.err.println("Count_Order_By_Name.java");
+        System.err.println("-----Starting Processor-----");
+        // Stream Logik
+        final StreamsBuilder builder = new StreamsBuilder();
+
+        final KStream<String, OrderPOJO> views = builder.stream("streams-pageview-input",
+                Consumed.with(Serdes.String(), new JSONSerde<>()));
+
+        views.groupBy((k, v) -> v.getCustomer())
+                .windowedBy(SlidingWindows.ofTimeDifferenceAndGrace(Duration.ofSeconds(10), Duration.ofSeconds(1)))
+                .count().toStream()
+                .peek((k, v) -> { System.out.println(k.key() + " " + k.window().startTime() + " " + k.window().endTime() + " " + v); });
+
+        return builder.build();
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -108,7 +120,7 @@ public class Count_Order_By_Name {
         Properties props = setProps(args);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                buildTopology("fleschm-final-order", "fleschm-2"),
+                countOrderwithWindow("fleschm-final-order", "fleschm-2"),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
