@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * and writes the messages as-is into a sink topic "streams-pipe-output".
  */
 public class Count_Order_By_Name {
-
+    private static final int NUMBER_OF_CUSTOMERS = 5;
     public static void main(String[] args) throws Exception {
 
         System.err.println("Count_Order_By_Name.java");
@@ -56,10 +56,10 @@ public class Count_Order_By_Name {
             props.load(inputStream);
         }
 
-        List customers = POJOGenerator.generateCustomer(30);
+        List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 1, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers), 1, 5, TimeUnit.SECONDS);
 
         System.err.println("-----Starting Processor-----");
         // Stream Logik
