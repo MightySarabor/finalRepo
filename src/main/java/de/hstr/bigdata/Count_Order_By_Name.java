@@ -53,6 +53,8 @@ public class Count_Order_By_Name {
                        "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+                props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 1);
+
 
 
                 props.put("security.protocol", "SASL_PLAINTEXT");
