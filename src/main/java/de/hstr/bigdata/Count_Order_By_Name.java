@@ -134,8 +134,8 @@ public class Count_Order_By_Name {
         List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers, false), 1, 1, TimeUnit.SECONDS);
-        Properties props = setProps(false);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers, true), 1, 1, TimeUnit.SECONDS);
+        Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
                 countCustomerInWindow("fleschm-final-order", "fleschm-2"),
