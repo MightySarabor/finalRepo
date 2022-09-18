@@ -65,6 +65,7 @@ public class Count_Order_By_Name {
                 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+                props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 2);
 
             }
             return props;
@@ -85,7 +86,7 @@ public class Count_Order_By_Name {
 
             return builder.build();
         }
-    static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
+        static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
         System.err.println("Count_Order_By_Name.java");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
@@ -111,7 +112,7 @@ public class Count_Order_By_Name {
 
         return builder.build();
     }
-    static Topology countCustomerInWindow(String inputTopic, String outputTopic){
+        static Topology countCustomerInWindow(String inputTopic, String outputTopic){
         System.err.println("Count_Order_By_Name_in_Window.java");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
