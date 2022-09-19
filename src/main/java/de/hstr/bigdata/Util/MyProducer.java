@@ -90,7 +90,7 @@ public class MyProducer {
     }
 
     public static void main1(String[] args) throws InterruptedException {
-        List customers = generateCustomer(3);
+        //List customers = generateCustomer(3);
         while(true){
             Thread.sleep(5000);
             //produceOrder(customers, false);
