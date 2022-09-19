@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Count_Order_By_Name {
     private static final int NUMBER_OF_CUSTOMERS = 2;
-    private static final String[] customers = {"Peter Pan, Hans Mueller, Guenther Jauch"};
+    private static final String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
             streams.setStateListener((newState, oldState) -> {
