@@ -62,8 +62,8 @@ public class MyProducer {
         //Sending data
 
         System.err.println(value);
-        my_producer.send(record);
-        my_producer.flush();
+        //my_producer.send(record);
+        //my_producer.flush();
 
     }
 
