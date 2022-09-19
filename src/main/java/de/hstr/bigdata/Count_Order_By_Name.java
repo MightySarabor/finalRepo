@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Count_Order_By_Name {
     private static final int NUMBER_OF_CUSTOMERS = 2;
-
+    private static final List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
             streams.setStateListener((newState, oldState) -> {
@@ -130,11 +130,7 @@ public class Count_Order_By_Name {
     }
 
     public static void main(String[] args) throws Exception {
-        System.err.println("Creating Customers");
-        List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
-        for(Object customer : customers){
-            System.err.println("" + customer);
-        }
+
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(customers, true), 1, 1, TimeUnit.SECONDS);
         Properties props = setProps(true);
