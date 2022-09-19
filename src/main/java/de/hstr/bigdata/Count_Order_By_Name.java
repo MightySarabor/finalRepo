@@ -130,6 +130,25 @@ public class Count_Order_By_Name {
         return builder.build();
     }
 
+    static Topology simpleReduce(String inputTopic, String outputTopic){
+        System.err.println("Count_Order_By_Name_in_Window.java");
+        // Stream Logik
+        final StreamsBuilder builder = new StreamsBuilder();
+        final KStream<String, OrderPOJO> orders = builder.stream(inputTopic,
+                Consumed.with(Serdes.String(), new JSONSerde<>()));
+
+            Reducer<Long> reducer = (longValueOne, longValueTwo) -> longValueOne + longValueTwo;
+
+            orders.mapValues(value -> (long)value.getPizzas().size())
+                    .peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
+                    .groupByKey().reduce(reducer,
+                                            Materialized.with(Serdes.String(), Serdes.Long()))
+                                .toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+
+
+        return builder.build();
+    }
+
     public static void main(String[] args) throws Exception {
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);

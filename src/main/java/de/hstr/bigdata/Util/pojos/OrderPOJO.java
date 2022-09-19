@@ -31,6 +31,13 @@ public class OrderPOJO implements JSONSerdeCompatible {
         return pizzas;
     }
 
+    public int getNumOfPizzas(){
+        int numOfPizzas = 0;
+        for(PizzaPOJO pizza:pizzas){
+            numOfPizzas+=1;
+        }
+        return numOfPizzas;
+    }
     public void setPizzas(List<PizzaPOJO> pizzas) {
         this.pizzas = pizzas;
     }
