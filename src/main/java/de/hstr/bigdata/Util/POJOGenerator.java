@@ -24,7 +24,7 @@ public class POJOGenerator {
         int randomIndex = (int) (Math.random() * list.length);
         return list[randomIndex];
     }
-    public final static List<String> generateCustomer(int number_of_customers){
+    /*public final static List<String> generateCustomer(int number_of_customers){
         Faker faker = new Faker();
         List<String> names = new ArrayList<String>();
         for(int i = 0; i <=  number_of_customers; i++){
@@ -35,7 +35,7 @@ public class POJOGenerator {
         }
         System.err.println("Liste erstellt");
         return names;
-    }
+    }*/
     public static OrderPOJO generateOrder(String[] customers){
 
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
