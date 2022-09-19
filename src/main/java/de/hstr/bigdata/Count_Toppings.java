@@ -48,7 +48,7 @@ public class Count_Toppings {
             props.load(inputStream);
         }
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(MyProducer::producePizza, 1, 1, TimeUnit.SECONDS);
+        //exec.scheduleAtFixedRate(MyProducer::producePizza, 1, 1, TimeUnit.SECONDS);
 
         System.err.println("-----Starting Processor-----");
         // Stream Logik
