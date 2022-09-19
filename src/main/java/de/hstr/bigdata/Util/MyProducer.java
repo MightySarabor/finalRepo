@@ -51,7 +51,7 @@ public class MyProducer {
         String value = null;
 
         //generate OrderString
-        while(true){
+
         try {
             value = Json.stringify(Json.toJson(generateOrder(customers)));
         } catch (JsonProcessingException e) {
@@ -65,7 +65,7 @@ public class MyProducer {
 
         my_producer.send(record);
         my_producer.flush();
-        }
+
     }
 
     public static void producePizza() {
