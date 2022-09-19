@@ -51,7 +51,7 @@ public class Count_Order_By_Name {
                 System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
 
-                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzza");
+                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzzas");
                 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
                        "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
@@ -180,7 +180,7 @@ public class Count_Order_By_Name {
         Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                simpleAggregate("fleschm-final-order", "fleschm-2"),
+                simpleReduce("fleschm-final-order", "fleschm-2"),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
