@@ -67,25 +67,6 @@ public class MyProducer {
 
     }
 
-    public static void producePizza() {
-
-        KafkaProducer my_producer = clusterProducer(false);
-        String value = null;
-        //generate PizzaString
-
-        try {
-            value = Json.stringify(Json.toJson(generatePizza()));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>(PIZZA_TOPIC, value);
-        //Sending data
-        System.err.println(value);
-        my_producer.send(record);
-        my_producer.flush();
-    }
 
     public static void main(String[] args) throws InterruptedException {
         String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};

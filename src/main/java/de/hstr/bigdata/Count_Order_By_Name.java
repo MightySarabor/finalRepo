@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit;
  * and writes the messages as-is into a sink topic "streams-pipe-output".
  */
 public class Count_Order_By_Name {
-    private static final int NUMBER_OF_CUSTOMERS = 2;
+    private static final int
+            NUMBER_OF_CUSTOMERS = 2;
     //private static final String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
