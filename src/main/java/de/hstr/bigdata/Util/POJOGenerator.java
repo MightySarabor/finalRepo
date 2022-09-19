@@ -33,7 +33,7 @@ public class POJOGenerator {
             String lastName = faker.name().lastName();
             names.add(name);
         }
-
+        System.err.println("Liste erstellt");
         return names;
     }
     public static OrderPOJO generateOrder(List customers){
