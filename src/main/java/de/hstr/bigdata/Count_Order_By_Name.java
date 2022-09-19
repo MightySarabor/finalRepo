@@ -139,11 +139,11 @@ public class Count_Order_By_Name {
 
             Reducer<Long> reducer = (longValueOne, longValueTwo) -> longValueOne + longValueTwo;
 
-            final KStream<String, Long> ordersByName =
-                    orders.map((key, value) -> KeyValue.pair(value.getCustomer(), (long)value.getPizzas().size()));
-                   ordersByName.peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
+
+                    orders.map((key, value) -> KeyValue.pair(value.getCustomer(), (long)value.getPizzas().size()))
+                   //.peek((key, value) -> System.err.println("Incoming record - key " + key + " value " + value))
                     .groupByKey().reduce(reducer,
-                                            Materialized.with(Serdes.String(), Serdes.String()));
+                                            Materialized.with(Serdes.String(), Serdes.Long()));
                                 //.toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
 
 
