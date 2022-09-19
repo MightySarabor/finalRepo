@@ -180,7 +180,7 @@ public class Count_Order_By_Name {
         Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                countCustomerInWindow("fleschm-final-order", "fleschm-2"),
+                simpleAggregate("fleschm-final-order", "fleschm-2"),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
