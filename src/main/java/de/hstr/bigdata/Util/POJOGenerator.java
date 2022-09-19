@@ -44,6 +44,7 @@ public class POJOGenerator {
         {
             pizzas.add(generatePizza());
         }
+        System.err.println("Order erstellt");
         return new OrderPOJO(getRandomCustomer(customers), pizzas);
     }
 
