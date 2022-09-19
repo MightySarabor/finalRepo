@@ -137,13 +137,13 @@ public class Count_Order_By_Name {
         final KStream<String, OrderPOJO> orders = builder.stream(inputTopic,
                 Consumed.with(Serdes.String(), new JSONSerde<>()));
 
-            Reducer<Long> reducer = (longValueOne, longValueTwo) -> longValueOne + longValueTwo;
+            Reducer<Integer> reducer = (ValueOne, ValueTwo) -> ValueOne + ValueTwo;
 
 
-                    orders.map((key, value) -> KeyValue.pair(value.getCustomer(), (long)value.getPizzas().size()))
-                   //.peek((key, value) -> System.err.println("Incoming record - key " + key + " value " + value))
+                    orders.map((key, value) -> KeyValue.pair(value.getCustomer(), value.getPizzas().size()))
+                   .peek((key, value) -> System.err.println("Incoming record - key " + key + " value " + value))
                     .groupByKey().reduce(reducer,
-                                            Materialized.with(Serdes.String(), Serdes.Long()));
+                                            Materialized.with(Serdes.String(), Serdes.Integer()));
                                 //.toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
 
 
