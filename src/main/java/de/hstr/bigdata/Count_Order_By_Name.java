@@ -4,6 +4,7 @@ import de.hstr.bigdata.Util.Json.JSONSerde;
 import de.hstr.bigdata.Util.MyProducer;
 import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
+import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
@@ -150,6 +151,27 @@ public class Count_Order_By_Name {
         return builder.build();
     }
 
+    static Topology simpleAggregate(String inputTopic, String outputTopic){
+        System.err.println("Count_Order_By_Name_in_Window.java");
+        // Stream Logik
+        final StreamsBuilder builder = new StreamsBuilder();
+        final KStream<String, OrderPOJO> orders = builder.stream(inputTopic,
+                Consumed.with(Serdes.String(), new JSONSerde<>()));
+
+        Aggregator<String, OrderPOJO, Float> priceCountAgg=
+                (key, value, total) -> value.getPizzas().get(0).getPrice() + total;
+
+        orders.map((key, value) -> KeyValue.pair("Summe Preis der ersten Pizza von Kunde: " + value.getCustomer(), value))
+                .peek((key, value) -> System.err.println("Incoming record - key " + key + " value " + value))
+                .groupByKey(Grouped.with(Serdes.String(), new JSONSerde<>()))
+                .aggregate(() -> 0f,
+                        priceCountAgg,
+                        Materialized.with(Serdes.String(), Serdes.Float()))
+                .toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Float()));
+
+        return builder.build();
+    }
+
     public static void main(String[] args) throws Exception {
 
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
@@ -157,7 +179,7 @@ public class Count_Order_By_Name {
         Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                simpleReduce("fleschm-final-order", "fleschm-2"),
+                simpleAggregate("fleschm-final-order", "fleschm-2"),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
