@@ -143,7 +143,7 @@ public class Count_Order_By_Name {
                     orders.map((key, value) -> KeyValue.pair(value.getCustomer(), (long)value.getPizzas().size()));
                    ordersByName.peek((key, value) -> System.out.println("Incoming record - key " +key +" value " + value))
                     .groupByKey().reduce(reducer,
-                                            Materialized.with(Serdes.String(), Serdes.Long()));
+                                            Materialized.with(Serdes.String(), Serdes.String()));
                                 //.toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
 
 
