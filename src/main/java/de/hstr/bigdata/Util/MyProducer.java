@@ -19,9 +19,9 @@ public class MyProducer {
     private static final String ORDER_TOPIC = "fleschm-final-order";
 
 
-    public static KafkaProducer clusterProducer(boolean cluster){
+    public static KafkaProducer clusterProducer(boolean cluster) {
         Properties props = new Properties();
-        if(cluster) {
+        if (cluster) {
             System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
             //properties
@@ -34,18 +34,17 @@ public class MyProducer {
             props.put("security.protocol", "SASL_PLAINTEXT");
             props.put("enable.auto.commit", "true");
             props.put("auto.commit.interval.ms", "1000");
-        }
-
-        else{
+        } else {
             props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
             props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
             props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         }
-        KafkaProducer<String,String> my_producer =
+        KafkaProducer<String, String> my_producer =
                 new KafkaProducer<String, String>(props);
         return my_producer;
     }
-    public static void produceOrder(String[] customers, boolean cluster){
+
+    public static void produceOrder(String[] customers, boolean cluster) {
         KafkaProducer my_producer = clusterProducer(false);
 
         String value = null;
@@ -70,9 +69,9 @@ public class MyProducer {
 
     public static void producePizza() {
 
-            KafkaProducer my_producer = clusterProducer(false);
-            String value = null;
-            //generate PizzaString
+        KafkaProducer my_producer = clusterProducer(false);
+        String value = null;
+        //generate PizzaString
 
         try {
             value = Json.stringify(Json.toJson(generatePizza()));
@@ -81,18 +80,18 @@ public class MyProducer {
         }
 
         ProducerRecord<String, String> record =
-                    new ProducerRecord<String, String>(PIZZA_TOPIC, value);
-            //Sending data
-            System.err.println(value);
-            my_producer.send(record);
-            my_producer.flush();
+                new ProducerRecord<String, String>(PIZZA_TOPIC, value);
+        //Sending data
+        System.err.println(value);
+        my_producer.send(record);
+        my_producer.flush();
     }
 
-    public static void main1(String[] args) throws InterruptedException {
-        //List customers = generateCustomer(3);
-        while(true){
+    public static void main(String[] args) throws InterruptedException {
+        String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
+        while (true) {
             Thread.sleep(5000);
-            //produceOrder(customers, false);
+            produceOrder(customers, false);
             System.out.println("Sent Record");
         }
 

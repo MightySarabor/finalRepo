@@ -1,7 +1,6 @@
 package de.hstr.bigdata.Util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.javafaker.Faker;
 import de.hstr.bigdata.Util.Json.Json;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
