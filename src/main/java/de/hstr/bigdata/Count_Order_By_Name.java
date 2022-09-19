@@ -9,6 +9,7 @@ import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Count_Order_By_Name {
     private static final int NUMBER_OF_CUSTOMERS = 2;
-    private static final List customers = POJOGenerator.generateCustomer(NUMBER_OF_CUSTOMERS);
+    private static final String[] customers = {"Peter Pan, Hans Mueller, Guenther Jauch"};
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
             streams.setStateListener((newState, oldState) -> {

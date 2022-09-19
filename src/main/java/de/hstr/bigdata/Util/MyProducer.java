@@ -45,7 +45,7 @@ public class MyProducer {
                 new KafkaProducer<String, String>(props);
         return my_producer;
     }
-    public static void produceOrder(List customers, boolean cluster){
+    public static void produceOrder(String[] customers, boolean cluster){
         KafkaProducer my_producer = clusterProducer(false);
 
         String value = null;
@@ -89,11 +89,11 @@ public class MyProducer {
             my_producer.flush();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main1(String[] args) throws InterruptedException {
         List customers = generateCustomer(3);
         while(true){
             Thread.sleep(5000);
-            produceOrder(customers, false);
+            //produceOrder(customers, false);
             System.out.println("Sent Record");
         }
 
