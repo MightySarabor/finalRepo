@@ -145,7 +145,7 @@ public class Count_Order_By_Name {
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
 
-        System.err.println("Kafka Streams 101 App Started");
+        System.err.println("Kafka Streams Started");
         runKafkaStreams(kafkaStreams);
         }
 }
