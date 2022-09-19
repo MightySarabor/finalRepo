@@ -54,7 +54,6 @@ public class MyProducer {
 
         try {
             value = Json.stringify(Json.toJson(generateOrder(customers)));
-            System.err.println("String Order erstellt");
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -63,7 +62,7 @@ public class MyProducer {
                 new ProducerRecord<String, String>(ORDER_TOPIC, value);
         //Sending data
 
-
+        System.err.println(value);
         my_producer.send(record);
         my_producer.flush();
 

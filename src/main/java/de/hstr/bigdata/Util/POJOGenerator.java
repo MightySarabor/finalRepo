@@ -19,12 +19,12 @@ public class POJOGenerator {
 
     // Function select an element base on index
     // and return an element
-    /*public static String getRandomCustomer(String[] list)
+    public static String getRandomCustomer(String[] list)
     {
         int randomIndex = (int) (Math.random() * list.length);
         return list[randomIndex];
     }
-    public final static List<String> generateCustomer(int number_of_customers){
+    /*public final static List<String> generateCustomer(int number_of_customers){
         Faker faker = new Faker();
         List<String> names = new ArrayList<String>();
         for(int i = 0; i <=  number_of_customers; i++){
@@ -45,8 +45,7 @@ public class POJOGenerator {
             pizzas.add(generatePizza());
         }
         System.err.println("Order erstellt");
-        //return new OrderPOJO(getRandomCustomer(customers), pizzas);
-        return null;
+        return new OrderPOJO(getRandomCustomer(customers), pizzas);
     }
 
     public static PizzaPOJO generatePizza(){
