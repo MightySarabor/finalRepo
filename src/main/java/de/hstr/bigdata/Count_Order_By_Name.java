@@ -180,7 +180,7 @@ public class Count_Order_By_Name {
         System.err.println("Liste erstellt");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[0]),
-                1, 1, TimeUnit.SECONDS);
+                100, 10, TimeUnit.MILLISECONDS);
 
         Properties props = setProps(true);
 
