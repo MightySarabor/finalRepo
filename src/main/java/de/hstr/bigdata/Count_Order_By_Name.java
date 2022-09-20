@@ -177,8 +177,8 @@ public class Count_Order_By_Name {
         if (args.length != 2) {
             throw new IllegalArgumentException("Das Programm braucht Inputtopic und Outputtopic als Argumente!");
         }
-        //ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        //exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(new String[]{"Peter Pan", "Hans Mueller", "Guenther Jauch"}, true, args[0]), 1, 1, TimeUnit.SECONDS);
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(new String[]{"Peter Pan", "Hans Mueller", "Guenther Jauch"}, true, args[0]), 5, 15, TimeUnit.SECONDS);
         Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
