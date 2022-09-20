@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
+
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
  * that reads from a source topic "streams-plaintext-input", where the values of messages represent lines of text,
@@ -174,11 +176,12 @@ public class Count_Order_By_Name {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Das Programm braucht Inputtopic und Outputtopic als Argumente!");
+        if (args.length != 3) {
+            throw new IllegalArgumentException("Arguemente eingeben in der Form: inputTopic outputTopic num_of_customers");
         }
+        String[] num_of_customers = generateCustomer(Integer.getInteger(args[2]));
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(new String[]{"Peter Pan", "Hans Mueller", "Guenther Jauch"}, true, args[0]), 5, 15, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[0]), 5, 15, TimeUnit.SECONDS);
         Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(

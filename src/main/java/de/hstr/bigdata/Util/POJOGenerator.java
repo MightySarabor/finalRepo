@@ -1,6 +1,7 @@
 package de.hstr.bigdata.Util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.javafaker.Faker;
 import de.hstr.bigdata.Util.Json.Json;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
@@ -23,18 +24,18 @@ public class POJOGenerator {
         int randomIndex = (int) (Math.random() * list.length);
         return list[randomIndex];
     }
-    /*public final static List<String> generateCustomer(int number_of_customers){
+    public final static String[] generateCustomer(int number_of_customers){
         Faker faker = new Faker();
-        List<String> names = new ArrayList<String>();
+        String[] names = new String[number_of_customers];
         for(int i = 0; i <=  number_of_customers; i++){
             String name = faker.name().fullName();
-            String firstName = faker.name().firstName();
-            String lastName = faker.name().lastName();
-            names.add(name);
+            //String firstName = faker.name().firstName();
+            //String lastName = faker.name().lastName();
+            names[i] = name;
         }
         System.err.println("Liste erstellt");
         return names;
-    }*/
+    }
     public static OrderPOJO generateOrder(String[] customers){
 
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
@@ -43,7 +44,7 @@ public class POJOGenerator {
         {
             pizzas.add(generatePizza());
         }
-        System.err.println("Order erstellt");
+        //System.err.println("Order erstellt");
         return new OrderPOJO(getRandomCustomer(customers), pizzas);
     }
 

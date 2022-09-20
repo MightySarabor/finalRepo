@@ -36,12 +36,12 @@
 			<artifactId>log4j-slf4j-impl</artifactId>
 			<version>2.18.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.github.javafaker/javafaker
+		<!-- https://mvnrepository.com/artifact/com.github.javafaker/javafaker-->
 		<dependency>
 			<groupId>com.github.javafaker</groupId>
 			<artifactId>javafaker</artifactId>
 			<version>1.0.2</version>
-		</dependency>-->
+		</dependency>
 		<!-- Jackson dependencies -->
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
