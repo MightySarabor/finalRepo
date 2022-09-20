@@ -76,16 +76,14 @@ public class Count_Order_By_Name {
             return props;
         }
         static Topology countOrderByName(String inputTopic, String outputTopic) {
-            System.err.println("Count_Order_By_Name.java");
+            System.err.println("Count_Order_By_Name");
             System.err.println("-----Starting Processor-----");
             // Stream Logik
             final StreamsBuilder builder = new StreamsBuilder();
 
             final KStream<String, OrderPOJO> pizza = builder.stream(inputTopic,
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
-
             pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
-
             pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
                     .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
 
@@ -188,7 +186,7 @@ public class Count_Order_By_Name {
 
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                simpleReduce(args[0], args[1]),
+                countOrderByName(args[0], args[1]),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
