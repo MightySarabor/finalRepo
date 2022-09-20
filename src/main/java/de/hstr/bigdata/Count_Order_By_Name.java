@@ -26,7 +26,6 @@ import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
  * and writes the messages as-is into a sink topic "streams-pipe-output".
  */
 public class Count_Order_By_Name {
-    private static final int
 
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
