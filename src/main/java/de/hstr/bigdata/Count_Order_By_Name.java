@@ -181,7 +181,7 @@ public class Count_Order_By_Name {
 
 
 
-        String[] num_of_customers = generateCustomer(Integer.getInteger("3"));
+        String[] num_of_customers = generateCustomer(5);
         /*System.err.println("Liste erstellt, starte Producer");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[0]),
