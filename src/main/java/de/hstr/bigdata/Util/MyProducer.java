@@ -45,7 +45,7 @@ public class MyProducer {
     }
 
     public static void produceOrder(String[] customers, boolean cluster) {
-        KafkaProducer my_producer = clusterProducer(false);
+        KafkaProducer my_producer = clusterProducer(cluster);
 
         String value = null;
 
