@@ -178,15 +178,12 @@ public class Count_Order_By_Name {
             throw new IllegalArgumentException("Arguemente eingeben in der Form: inputTopic outputTopic num_of_customers");
         }
         System.err.println("Erstelle Liste");
-
-
-
-        String[] num_of_customers = generateCustomer(5);
-        /*System.err.println("Liste erstellt, starte Producer");
+        String[] num_of_customers = generateCustomer(Integer.parseInt(args[2]));
+        System.err.println("Liste erstellt");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[0]),
                 5, 15, TimeUnit.SECONDS);
-        System.err.println("Producer gestartet");*/
+
         Properties props = setProps(true);
 
 
