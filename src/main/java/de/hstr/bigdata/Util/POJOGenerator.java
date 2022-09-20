@@ -19,21 +19,20 @@ public class POJOGenerator {
 
     // Function select an element base on index
     // and return an element
-    public static String getRandomCustomer(String[] list)
+    public static String getRandomCustomer(String[] names)
     {
-        int randomIndex = (int) (Math.random() * list.length);
-        return list[randomIndex];
+        int randomIndex = (int) (Math.random() * names.length);
+        return names[randomIndex];
     }
     public final static String[] generateCustomer(int number_of_customers){
         Faker faker = new Faker();
         String[] names = new String[number_of_customers];
-        for(int i = 0; i <=  number_of_customers; i++){
+        for(int i = 0; i <  number_of_customers; i++){
             String name = faker.name().fullName();
             //String firstName = faker.name().firstName();
             //String lastName = faker.name().lastName();
             names[i] = name;
         }
-        System.err.println("Liste erstellt");
         return names;
     }
     public static OrderPOJO generateOrder(String[] customers){
@@ -54,12 +53,11 @@ public class POJOGenerator {
         return new PizzaPOJO(pizza, sizes[sizeAndPrice], prices[sizeAndPrice]);
     }
 
-    public static void main1(String[] args) throws JsonProcessingException {
+    public static void main(String[] args) throws JsonProcessingException {
 
-        for(int i = 0; i <= 100000; i++) {
-            //System.out.println(Json.prettyPrint(Json.toJson(generateOrder(500).getCustomer())));
-            //generateOrder(500);
-            //System.out.println(i);
+        String[] names = generateCustomer(5);
+        for(int i = 0; i < 5; i++){
+            System.err.println(names[i]);
             
         }
     }
