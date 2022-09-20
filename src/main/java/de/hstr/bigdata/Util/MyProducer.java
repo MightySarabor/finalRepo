@@ -16,7 +16,7 @@ import static de.hstr.bigdata.Util.POJOGenerator.*;
 public class MyProducer {
 
     private static final String PIZZA_TOPIC = "fleschm-final-pizzas";
-    private static final String ORDER_TOPIC = "fleschm-final-order";
+    private static final String ORDER_TOPIC = "fleschm-final-order_final";
 
 
     public static KafkaProducer clusterProducer(boolean cluster) {
@@ -62,8 +62,8 @@ public class MyProducer {
         //Sending data
 
         System.err.println(value);
-        //my_producer.send(record);
-        //my_producer.flush();
+        my_producer.send(record);
+        my_producer.flush();
 
     }
 
@@ -72,9 +72,8 @@ public class MyProducer {
         String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
         while (true) {
             Thread.sleep(5000);
-            produceOrder(customers, false);
+            produceOrder(customers, true);
             System.out.println("Sent Record");
         }
-
     }
 }
