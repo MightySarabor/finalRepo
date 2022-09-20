@@ -40,7 +40,7 @@ public class POJOGenerator {
 
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
         int numerOfOrders = ThreadLocalRandom.current().nextInt(0, 5);
-        for(int i = 0; i <= numerOfOrders; i++)
+        for(int i = 0; i < numerOfOrders; i++)
         {
             pizzas.add(generatePizza());
         }

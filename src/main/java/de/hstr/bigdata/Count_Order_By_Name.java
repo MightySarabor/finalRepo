@@ -27,8 +27,7 @@ import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
  */
 public class Count_Order_By_Name {
     private static final int
-            NUMBER_OF_CUSTOMERS = 2;
-    //private static final String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
+
         static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
             streams.setStateListener((newState, oldState) -> {
@@ -179,6 +178,7 @@ public class Count_Order_By_Name {
         if (args.length != 3) {
             throw new IllegalArgumentException("Arguemente eingeben in der Form: inputTopic outputTopic num_of_customers");
         }
+
         String[] num_of_customers = generateCustomer(Integer.getInteger(args[2]));
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[0]), 5, 15, TimeUnit.SECONDS);
