@@ -133,7 +133,7 @@ public class Count_Order_By_Name {
     }
 
     static Topology simpleReduce(String inputTopic, String outputTopic){
-        System.err.println("Count_Order_By_Name_in_Window.java");
+        System.err.println("reduce");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
         final KStream<String, OrderPOJO> orders = builder.stream(inputTopic,
@@ -153,7 +153,7 @@ public class Count_Order_By_Name {
     }
 
     static Topology simpleAggregate(String inputTopic, String outputTopic){
-        System.err.println("Count_Order_By_Name_in_Window.java");
+        System.err.println("aggregate");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
         final KStream<String, OrderPOJO> orders = builder.stream(inputTopic,
@@ -176,11 +176,11 @@ public class Count_Order_By_Name {
     public static void main(String[] args) throws Exception {
 
         //ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        //exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(new String[]{"Peter Pan", "Hans Mueller", "Guenther Jauch"}, true), 1, 1, TimeUnit.SECONDS);
+        //exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(new String[]{"Peter Pan", "Hans Mueller", "Guenther Jauch"}, true, args[0]), 1, 1, TimeUnit.SECONDS);
         Properties props = setProps(true);
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                simpleReduce("fleschm-final-order", "fleschm-2"),
+                simpleReduce(args[0], args[1]),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
