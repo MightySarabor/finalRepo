@@ -172,7 +172,7 @@ public class Count_Order_By_Name {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
+        if (args.length != 4) {
             throw new IllegalArgumentException("Arguemente eingeben in der Form: inputTopic outputTopic num_of_customers");
         }
         System.err.println("Erstelle Liste");
@@ -183,11 +183,32 @@ public class Count_Order_By_Name {
                 100, 10, TimeUnit.MILLISECONDS);
 
         Properties props = setProps(true);
+        KafkaStreams kafkaStreams = null;
+        switch(args[3]) {
+            case "reduce":
+                kafkaStreams = new KafkaStreams(
+                        simpleReduce(args[0], args[1]),
+                        props);
+                break;
+            case "aggregate":
+                kafkaStreams = new KafkaStreams(
+                        simpleAggregate(args[0], args[1]),
+                        props);
+                break;
+            case "countByCustomer":
+                kafkaStreams = new KafkaStreams(
+                        countOrderByName(args[0], args[1]),
+                        props);
+                break;
+            case "countWithWindow":
+                kafkaStreams = new KafkaStreams(
+                        countCustomerInWindow(args[0], args[1]),
+                        props);
+                break;
+            default:
+                System.err.println("Bitte Methode eingeben: reduce, aggregate, countByCustomer oder countWithWindow");
+        }
 
-
-        KafkaStreams kafkaStreams = new KafkaStreams(
-                simpleReduce(args[0], args[1]),
-                props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
 
