@@ -186,7 +186,7 @@ public class Count_Order_By_Name {
 
 
         KafkaStreams kafkaStreams = new KafkaStreams(
-                countOrderByName(args[0], args[1]),
+                simpleReduce(args[0], args[1]),
                 props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
