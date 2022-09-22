@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
+import static jdk.internal.platform.Container.metrics;
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
@@ -51,7 +52,7 @@ public class Count_Order_By_Name {
                 System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
 
 
-                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-final-pizzzas");
+                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-showcase");
                 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
                        "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
@@ -145,7 +146,6 @@ public class Count_Order_By_Name {
                     .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer())).reduce(reducer,
                                             Materialized.with(Serdes.String(), Serdes.Integer()))
                                 .toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Integer()));
-
 
         return builder.build();
     }
