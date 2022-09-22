@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
-import static jdk.internal.platform.Container.metrics;
+
 
 /**
  * In this example, we implement a simple LineSplit program using the high-level Streams DSL
