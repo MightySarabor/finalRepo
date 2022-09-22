@@ -6,11 +6,14 @@ import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -130,6 +133,27 @@ public class Count_Order_By_Name {
                 .to(outputTopic, Produced.with(Serdes.String(),Serdes.Long()));
         return builder.build();
     }
+        static Topology localStateStoreQueryExample(String inputTopic, String outputTopic) {
+            System.err.println("LocalStateStoreQuery");
+            System.err.println("-----Starting Processor-----");
+            // Stream Logik
+            final StreamsBuilder builder = new StreamsBuilder();
+            KStream<String, String> order = builder.stream(inputTopic);
+
+        // Define the processing topology (here: WordCount)
+            KGroupedStream<String, String> groupedByWord = order
+                    .flatMapValues(value -> Arrays.asList(value.toLowerCase().split("\\W+")))
+                    .groupBy((key, word) -> word, Grouped.with(Serdes.String(), Serdes.String()));
+
+            // Create a key-value store named "CountsKeyValueStore" for the all-time word counts
+           // groupedByWord.count());
+
+
+
+
+
+            return builder.build();
+        }
 
     static Topology simpleReduce(String inputTopic, String outputTopic){
         System.err.println("reduce");
