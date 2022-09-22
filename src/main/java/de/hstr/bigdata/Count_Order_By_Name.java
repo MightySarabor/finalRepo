@@ -53,7 +53,7 @@ public class Count_Order_By_Name {
             Properties props = new Properties();
             if(cluster) {
                 System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
-                System.setProperty("com.sun.management.jmxremote.port", "1616");
+                //System.setProperty("com.sun.management.jmxremote.port", "1616");
 
                 props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-showcase");
                 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
