@@ -195,7 +195,7 @@ public class Count_Order_By_Name {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 4) {
+        if (args.length != 5) {
             throw new IllegalArgumentException("Arguemente eingeben in der Form: StreamsID inputTopic outputTopic num_of_customers Methode");
         }
         System.err.println("Erstelle Liste");
