@@ -206,7 +206,7 @@ public class Count_Order_By_Name {
 
         Properties props = setProps(true, args[0]);
         KafkaStreams kafkaStreams = null;
-        switch(args[4]) {
+        switch(args[3]) {
             case "reduce":
                 kafkaStreams = new KafkaStreams(
                         simpleReduce(args[1], args[2]),
