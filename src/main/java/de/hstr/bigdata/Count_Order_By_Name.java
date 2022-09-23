@@ -49,19 +49,18 @@ public class Count_Order_By_Name {
 
             System.err.println("Streams Closed");
         }
-        public static Properties setProps(boolean cluster){
+        public static Properties setProps(boolean cluster, String StreamID){
             Properties props = new Properties();
             if(cluster) {
                 System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
                 //System.setProperty("com.sun.management.jmxremote.port", "1616");
 
-                props.put(StreamsConfig.APPLICATION_ID_CONFIG, "fleschm-showcase");
+                props.put(StreamsConfig.APPLICATION_ID_CONFIG, StreamID);
                 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
                        "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-                props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 1);
-
+                props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
 
 
                 props.put("security.protocol", "SASL_PLAINTEXT");
@@ -197,40 +196,43 @@ public class Count_Order_By_Name {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {
-            throw new IllegalArgumentException("Arguemente eingeben in der Form: inputTopic outputTopic num_of_customers");
+            throw new IllegalArgumentException("Arguemente eingeben in der Form: StreamsID inputTopic outputTopic num_of_customers Methode");
         }
         System.err.println("Erstelle Liste");
-        String[] num_of_customers = generateCustomer(Integer.parseInt(args[2]));
+        String[] num_of_customers = generateCustomer(Integer.parseInt(args[3]));
         System.err.println("Liste erstellt");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[0]),
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[1]),
                 100, 10, TimeUnit.MILLISECONDS);
 
-        Properties props = setProps(true);
+        Properties props = setProps(true, args[0]);
         KafkaStreams kafkaStreams = null;
-        switch(args[3]) {
+        switch(args[4]) {
             case "reduce":
                 kafkaStreams = new KafkaStreams(
-                        simpleReduce(args[0], args[1]),
+                        simpleReduce(args[1], args[2]),
                         props);
                 break;
             case "aggregate":
                 kafkaStreams = new KafkaStreams(
-                        simpleAggregate(args[0], args[1]),
+                        simpleAggregate(args[1], args[2]),
                         props);
                 break;
             case "countByCustomer":
                 kafkaStreams = new KafkaStreams(
-                        countOrderByName(args[0], args[1]),
+                        countOrderByName(args[1], args[2]),
                         props);
                 break;
             case "countWithWindow":
                 kafkaStreams = new KafkaStreams(
-                        countCustomerInWindow(args[0], args[1]),
+                        countCustomerInWindow(args[1], args[2]),
                         props);
                 break;
+            case "help":
+                System.err.println("Methoden: reduce, aggregate, countByCustomer oder countWithWindow");
+                break;
             default:
-                System.err.println("Bitte Methode eingeben: reduce, aggregate, countByCustomer oder countWithWindow");
+                System.err.println("default");
         }
 
 
