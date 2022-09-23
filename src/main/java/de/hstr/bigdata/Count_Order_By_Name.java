@@ -89,7 +89,6 @@ public class Count_Order_By_Name {
             pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
             pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
                     .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
-
             return builder.build();
         }
         static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
@@ -195,14 +194,14 @@ public class Count_Order_By_Name {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 5) {
+        if (args.length != 4) {
             throw new IllegalArgumentException("Arguemente eingeben in der Form: StreamsID inputTopic outputTopic num_of_customers Methode");
         }
         System.err.println("Erstelle Liste");
-        String[] num_of_customers = generateCustomer(Integer.parseInt(args[3]));
+        //String[] num_of_customers = generateCustomer(Integer.parseInt(args[3]));
         System.err.println("Liste erstellt");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(num_of_customers, true, args[1]),
+        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(true, args[1]),
                 100, 10, TimeUnit.MILLISECONDS);
 
         Properties props = setProps(true, args[0]);

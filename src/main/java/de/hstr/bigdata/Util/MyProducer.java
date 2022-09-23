@@ -27,6 +27,7 @@ public class MyProducer {
             props.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
             props.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
+
             props.put("security.protocol", "SASL_PLAINTEXT");
             props.put("enable.auto.commit", "true");
             props.put("auto.commit.interval.ms", "1000");
@@ -40,7 +41,7 @@ public class MyProducer {
         return my_producer;
     }
 
-    public static void produceOrder(String[] customers, boolean cluster, String inputTopic) {
+    public static void produceOrder(boolean cluster, String inputTopic) {
         KafkaProducer my_producer = clusterProducer(cluster);
 
         String value = null;
@@ -48,7 +49,7 @@ public class MyProducer {
         //generate OrderString
 
         try {
-            value = Json.stringify(Json.toJson(generateOrder(customers)));
+            value = Json.stringify(Json.toJson(generateOrder()));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -68,7 +69,7 @@ public class MyProducer {
         String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
         while (true) {
             Thread.sleep(5000);
-            produceOrder(customers, true, args[0]);
+            produceOrder(true, args[0]);
             System.out.println("Sent Record");
         }
     }

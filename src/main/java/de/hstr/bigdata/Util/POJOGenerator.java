@@ -35,7 +35,15 @@ public class POJOGenerator {
         }
         return names;
     }
-    public static OrderPOJO generateOrder(String[] customers){
+    public final static String generateSingleCustomer(){
+        Faker faker = new Faker();
+        String name = faker.name().fullName();
+            //String firstName = faker.name().firstName();
+            //String lastName = faker.name().lastName();
+
+        return name;
+    }
+    public static OrderPOJO generateOrder(){
 
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
         int numerOfOrders = ThreadLocalRandom.current().nextInt(0, 5);
@@ -44,7 +52,7 @@ public class POJOGenerator {
             pizzas.add(generatePizza());
         }
         //System.err.println("Order erstellt");
-        return new OrderPOJO(getRandomCustomer(customers), pizzas);
+        return new OrderPOJO(generateSingleCustomer(), pizzas);
     }
 
     public static PizzaPOJO generatePizza(){
