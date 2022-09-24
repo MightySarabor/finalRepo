@@ -65,7 +65,7 @@ public class Count_Order_By_Name {
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
                 // cache deaktivieren, damit alle Ergebnisse angezeigt werden.
-                //props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+                props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
                 // temp Statedir, um immer frisch anzufangen
                 try {
                     props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString());
