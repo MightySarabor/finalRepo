@@ -88,6 +88,7 @@ public class Count_Order_By_Name {
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
             //pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
             pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
+                    .peek((k, v) -> System.err.println("Customer " + k + " " + v))
                     .filter((key, value) -> (value % 3000 == 0))
                     .peek((key, value) -> System.err.println(value));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
@@ -204,7 +205,7 @@ public class Count_Order_By_Name {
         System.err.println("Liste erstellt");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(true, args[1]),
-                100, 10, TimeUnit.MILLISECONDS);
+                1, 5, TimeUnit.SECONDS);
 
         Properties props = setProps(true, args[0]);
         KafkaStreams kafkaStreams = null;
