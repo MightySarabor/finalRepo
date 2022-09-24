@@ -72,7 +72,7 @@ public class MyProducer {
             produceOrder(true, args[0]);
             count = count + 1;
             if(count % 10==0){
-                System.err.println("10 Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
+                System.err.println(count + "Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
             }
         }
     }
