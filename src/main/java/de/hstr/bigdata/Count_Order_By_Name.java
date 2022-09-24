@@ -88,10 +88,10 @@ public class Count_Order_By_Name {
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
             pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
             pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
-                    .peek((k, v) -> System.err.println("Customer " + k + " " + v))
                     .map((k, v) -> KeyValue.pair("Count", 1))
+                    .peek((k, v) -> System.err.println(k + " " + v))
                     .groupBy((k, v) -> k).count().toStream()
-                    .filter((key, value) -> (value % 3000 == 0))
+                    .filter((key, value) -> (value % 3 == 0))
                     .peek((key, value) -> System.err.println(value));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
             return builder.build();
