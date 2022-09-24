@@ -16,6 +16,8 @@ import static de.hstr.bigdata.Util.POJOGenerator.*;
 
 public class MyProducer {
 
+    private static KafkaProducer<String, String> producer;
+
     public static KafkaProducer clusterProducer(boolean cluster) {
         Properties props = new Properties();
         if (cluster) {
@@ -43,8 +45,6 @@ public class MyProducer {
     }
 
     public static void produceOrder(boolean cluster, String inputTopic) {
-        KafkaProducer my_producer = clusterProducer(cluster);
-
         String value = null;
         //generate OrderString
         try {
@@ -56,7 +56,6 @@ public class MyProducer {
         ProducerRecord<String, String> record =
                 new ProducerRecord<String, String>(inputTopic, value);
         //Sending data
-
         //System.err.println(value);
         my_producer.send(record);
         my_producer.flush();
@@ -66,9 +65,10 @@ public class MyProducer {
 
     public static void main(String[] args) throws InterruptedException {
         System.err.println("---Starte Producer---");
+        producer = clusterProducer(true);
         int count = 0;
         while(true){
-            Thread.sleep(10);
+            Thread.sleep(1);
             produceOrder(true, args[0]);
             count = count + 1;
             if(count % 10000==0){
