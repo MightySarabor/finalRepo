@@ -86,9 +86,11 @@ public class Count_Order_By_Name {
 
             final KStream<String, OrderPOJO> pizza = builder.stream(inputTopic,
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
-            pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
+            //pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
             pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
-                    .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+                    .filter((key, value) -> (value % 3000 == 0))
+                    .peek((key, value) -> System.err.println(value));
+                    //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
             return builder.build();
         }
         static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
