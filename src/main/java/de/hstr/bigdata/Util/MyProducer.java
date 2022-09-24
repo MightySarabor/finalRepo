@@ -70,8 +70,8 @@ public class MyProducer {
         while(true){
             Thread.sleep(10000);
             produceOrder(true, args[0]);
-            count+=count;
-            if(count % 1000==0){
+            count = count + 1;
+            if(count % 10==0){
                 System.err.println("10 Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
             }
         }
