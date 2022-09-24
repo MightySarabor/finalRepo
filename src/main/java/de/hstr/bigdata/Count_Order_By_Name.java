@@ -93,13 +93,6 @@ public class Count_Order_By_Name {
                     pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
 
                     .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
-            //.map((k, v) -> KeyValue.pair("Count", 1));
-            //.groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
-            //.count()
-            //.toStream();
-            //.peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
-            //.filter((key, value) -> (value % 1000 == 0))
-            //.peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ));
             return builder.build();
         }
     static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
@@ -164,6 +157,31 @@ public class Count_Order_By_Name {
             return builder.build();
         }
 
+    static Topology mapRecords(String inputTopic, String outputTopic) {
+
+        System.err.println("map counts");
+        System.err.println("-----Starting Processor-----");
+        // Stream Logik
+        final StreamsBuilder builder = new StreamsBuilder();
+        KStream<String, String> records = builder.stream(inputTopic);
+        // Define the processing topology
+        records
+        .map((k, v) -> KeyValue.pair("Count", 1))
+        .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
+        .count()
+        .toStream()
+        .peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
+        .filter((key, value) -> (value % 1000 == 0))
+        .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ))
+
+                .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+
+
+
+
+        return builder.build();
+    }
+
     static Topology simpleReduce(String inputTopic, String outputTopic){
         System.err.println("reduce");
         // Stream Logik
@@ -174,11 +192,14 @@ public class Count_Order_By_Name {
             Reducer<Integer> reducer = (ValueOne, ValueTwo) -> ValueOne + ValueTwo;
 
 
-                    orders.map((key, value) -> KeyValue.pair(value.getCustomer(), value.getPizzas().size()))
-                   .peek((key, value) -> System.err.println("Incoming record - key " + key + " value " + value))
-                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer())).reduce(reducer,
-                                            Materialized.with(Serdes.String(), Serdes.Integer()))
-                                .toStream().to(outputTopic, Produced.with(Serdes.String(), Serdes.Integer()));
+            orders
+            .map((key, value) -> KeyValue.pair(value.getCustomer(), value.getPizzas().size()))
+            .peek((key, value) -> System.err.println("Incoming record - key " + key + " value " + value))
+            .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer())).reduce(reducer,
+                               Materialized.with(Serdes.String(), Serdes.Integer()))
+            .toStream()
+            .peek((key, value) -> System.err.println(value))
+            .to(outputTopic, Produced.with(Serdes.String(), Serdes.Integer()));
 
         return builder.build();
     }
@@ -232,8 +253,13 @@ public class Count_Order_By_Name {
                         countCustomerInWindow(args[1], args[2]),
                         props);
                 break;
+            case "mapRecords":
+                kafkaStreams = new KafkaStreams(
+                        mapRecords(args[1], args[2]),
+                        props);
+                break;
             case "help":
-                System.err.println("Methoden: reduce, aggregate, countByCustomer oder countWithWindow");
+                System.err.println("Methoden: reduce, aggregate, countByCustomer, countWithWindow, mapRecords");
                 break;
             default:
                 System.err.println("default");
