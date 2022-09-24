@@ -68,7 +68,7 @@ public class Count_Order_By_Name {
                 props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
                 // temp Statedir, um immer frisch anzufangen
                 try {
-                    props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString())
+                    props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
