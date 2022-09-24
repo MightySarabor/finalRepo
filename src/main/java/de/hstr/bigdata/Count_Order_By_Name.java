@@ -65,7 +65,7 @@ public class Count_Order_By_Name {
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
                 // cache deaktivieren, damit alle Ergebnisse angezeigt werden.
-                props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+                //props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
                 // temp Statedir, um immer frisch anzufangen
                 try {
                     props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString());
@@ -179,9 +179,8 @@ public class Count_Order_By_Name {
                 .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30)))
         .count()
         .toStream()
-        .peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
-        .filter((key, value) -> (value % 100 == 0))
-        .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ))
+        .peek((k, v) -> System.err.println(v))
+        //.filter((key, value) -> (value % 100 == 0))
         .map((Windowed<String> key, Long count) -> new KeyValue<>(key.key(), count.toString()))
         .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
 
