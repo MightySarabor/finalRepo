@@ -90,7 +90,9 @@ public class Count_Order_By_Name {
             pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
                     .map((k, v) -> KeyValue.pair("Count", 1))
                     .peek((k, v) -> System.err.println(k + " " + v))
-                    .groupBy((k, v) -> k).count().toStream()
+                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
+                    .count()
+                    .toStream()
                     .filter((key, value) -> (value % 3 == 0))
                     .peek((key, value) -> System.err.println(value));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
