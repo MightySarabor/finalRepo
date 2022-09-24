@@ -212,7 +212,7 @@ public class Count_Order_By_Name {
         //System.err.println("Liste erstellt");
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(true, args[1]),
-                1000, 10, TimeUnit.MILLISECONDS);
+                120, 60, TimeUnit.SECONDS);
 
         Properties props = setProps(true, args[0]);
         KafkaStreams kafkaStreams = null;
