@@ -89,16 +89,17 @@ public class Count_Order_By_Name {
 
             final KStream<String, OrderPOJO> pizza = builder.stream(inputTopic,
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
-                    //pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
+                    pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
                     pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
-                    .map((k, v) -> KeyValue.pair("Count", 1))
-                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
-                    .count()
-                    .toStream()
-                    //.peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
-                    .filter((key, value) -> (value % 1000 == 0))
-                    .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ));
-                    //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+
+                    .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+            //.map((k, v) -> KeyValue.pair("Count", 1));
+            //.groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
+            //.count()
+            //.toStream();
+            //.peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
+            //.filter((key, value) -> (value % 1000 == 0))
+            //.peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ));
             return builder.build();
         }
     static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
