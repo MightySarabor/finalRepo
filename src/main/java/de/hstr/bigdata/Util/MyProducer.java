@@ -68,12 +68,12 @@ public class MyProducer {
         producer = clusterProducer(true);
         int count = 0;
         while(true){
-            Thread.sleep(1000);
+            Thread.sleep(100);
             produceOrder(true, args[0]);
             count = count + 1;
-            if(count % 100==0){
+            if(count % 1000==0){
                 System.err.println(count + " Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
-            } else if (count % 1 == 0) {
+            } else if (count % 100 == 0) {
                 System.err.println(count);
             }
 
