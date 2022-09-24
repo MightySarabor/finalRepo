@@ -179,7 +179,7 @@ public class Count_Order_By_Name {
                 .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30)))
         .count()
         .toStream()
-        .peek((k, v) -> System.err.println(v))
+        .peek((k, v) -> System.err.println("Summe der letzten 30 Sekunden: " + v))
         //.filter((key, value) -> (value % 100 == 0))
         .map((Windowed<String> key, Long count) -> new KeyValue<>(key.key(), count.toString()))
         .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
