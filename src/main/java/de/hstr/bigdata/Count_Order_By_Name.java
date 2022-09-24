@@ -11,6 +11,7 @@ import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,8 +96,8 @@ public class Count_Order_By_Name {
                     .count()
                     .toStream()
                     //.peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
-                    .filter((key, value) -> (value % 3000 == 0))
-                    .peek((key, value) -> System.err.println(value));
+                    .filter((key, value) -> (value % 1000 == 0))
+                    .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " + new Timestamp(System.currentTimeMillis())));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
             return builder.build();
         }
