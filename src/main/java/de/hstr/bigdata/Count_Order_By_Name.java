@@ -183,7 +183,7 @@ public class Count_Order_By_Name {
         .toStream()
         .peek((k, v) -> System.err.println("Summe der letzten 30 Sekunden: " + v))
         //.filter((key, value) -> (value % 100 == 0))
-        .map((Windowed<String> key, Long count) -> new KeyValue<>(key.key(), count.toString()))
+        .map((Windowed<String> key, Long count) -> new KeyValue<>( "" + new Timestamp(System.currentTimeMillis()), count.toString()))
         .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
 
 
