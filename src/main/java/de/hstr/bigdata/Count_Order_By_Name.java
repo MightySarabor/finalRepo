@@ -25,6 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
+import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded;
 
 
 /**
@@ -178,6 +179,7 @@ public class Count_Order_By_Name {
         .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
                 .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30)))
         .count()
+                .suppress(Suppressed.untilWindowCloses(unbounded()))
         .toStream()
         .peek((k, v) -> System.err.println("Summe der letzten 30 Sekunden: " + v))
         //.filter((key, value) -> (value % 100 == 0))
