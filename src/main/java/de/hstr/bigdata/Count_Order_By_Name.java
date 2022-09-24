@@ -32,7 +32,7 @@ import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
  */
 public class Count_Order_By_Name {
 
-        static void runKafkaStreams(final KafkaStreams streams) {
+    static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
             streams.setStateListener((newState, oldState) -> {
                 if (oldState == KafkaStreams.State.RUNNING && newState != KafkaStreams.State.RUNNING) {
@@ -50,7 +50,7 @@ public class Count_Order_By_Name {
 
             System.err.println("Streams Closed");
         }
-        public static Properties setProps(boolean cluster, String StreamID){
+    public static Properties setProps(boolean cluster, String StreamID){
             Properties props = new Properties();
             if(cluster) {
                 System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
@@ -81,7 +81,7 @@ public class Count_Order_By_Name {
             }
             return props;
         }
-        static Topology countOrderByName(String inputTopic, String outputTopic) {
+    static Topology countOrderByName(String inputTopic, String outputTopic) {
             System.err.println("Count_Order_By_Name");
             System.err.println("-----Starting Processor-----");
             // Stream Logik
@@ -97,11 +97,11 @@ public class Count_Order_By_Name {
                     .toStream()
                     //.peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
                     .filter((key, value) -> (value % 1000 == 0))
-                    .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " + new Timestamp(System.currentTimeMillis())));
+                    .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
             return builder.build();
         }
-        static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
+    static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
         System.err.println("Count_Order_By_Name.java");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
@@ -127,7 +127,7 @@ public class Count_Order_By_Name {
 
         return builder.build();
     }
-        static Topology countCustomerInWindow(String inputTopic, String outputTopic){
+    static Topology countCustomerInWindow(String inputTopic, String outputTopic){
         System.err.println("Count_Order_By_Name_in_Window.java");
         // Stream Logik
         final StreamsBuilder builder = new StreamsBuilder();
@@ -141,7 +141,7 @@ public class Count_Order_By_Name {
                 .to(outputTopic, Produced.with(Serdes.String(),Serdes.Long()));
         return builder.build();
     }
-        static Topology localStateStoreQueryExample(String inputTopic, String outputTopic) {
+    static Topology localStateStoreQueryExample(String inputTopic, String outputTopic) {
             System.err.println("LocalStateStoreQuery");
             System.err.println("-----Starting Processor-----");
             // Stream Logik
@@ -207,12 +207,6 @@ public class Count_Order_By_Name {
         if (args.length != 4) {
             throw new IllegalArgumentException("Arguemente eingeben in der Form: StreamsID inputTopic outputTopic num_of_customers Methode");
         }
-        //System.err.println("Erstelle Liste");
-        //String[] num_of_customers = generateCustomer(Integer.parseInt(args[3]));
-        //System.err.println("Liste erstellt");
-        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> MyProducer.produceOrder(true, args[1]),
-                120, 60, TimeUnit.SECONDS);
 
         Properties props = setProps(true, args[0]);
         KafkaStreams kafkaStreams = null;
@@ -243,7 +237,6 @@ public class Count_Order_By_Name {
             default:
                 System.err.println("default");
         }
-
 
         Runtime.getRuntime().addShutdownHook(new Thread(kafkaStreams::close));
 

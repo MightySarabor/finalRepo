@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.StreamsConfig;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,9 +46,7 @@ public class MyProducer {
         KafkaProducer my_producer = clusterProducer(cluster);
 
         String value = null;
-
         //generate OrderString
-
         try {
             value = Json.stringify(Json.toJson(generateOrder()));
         } catch (JsonProcessingException e) {
@@ -66,11 +65,13 @@ public class MyProducer {
 
 
     public static void main(String[] args) throws InterruptedException {
-        String[] customers = {"Peter Pan", "Hans Mueller", "Guenther Jauch"};
-        while (true) {
-            Thread.sleep(5000);
+        int count = 0;
+        while(true){
+            Thread.sleep(10000);
             produceOrder(true, args[0]);
-            System.out.println("Sent Record");
+            if(count % 1000==0){
+                System.err.println("10 Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
+            }
         }
     }
 }
