@@ -86,13 +86,13 @@ public class Count_Order_By_Name {
 
             final KStream<String, OrderPOJO> pizza = builder.stream(inputTopic,
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
-            pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
-            pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
+                    //pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
+                    pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
                     .map((k, v) -> KeyValue.pair("Count", 1))
-                    .peek((k, v) -> System.err.println(k + " " + v))
                     .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
                     .count()
                     .toStream()
+                    .peek((k, v) -> System.err.println(k + " " + v))
                     .filter((key, value) -> (value % 3 == 0))
                     .peek((key, value) -> System.err.println(value));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
