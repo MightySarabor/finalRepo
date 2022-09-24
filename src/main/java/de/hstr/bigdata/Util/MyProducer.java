@@ -68,10 +68,10 @@ public class MyProducer {
         System.err.println("---Starte Producer---");
         int count = 0;
         while(true){
-            Thread.sleep(10000);
+            Thread.sleep(1000);
             produceOrder(true, args[0]);
             count = count + 1;
-            if(count % 10==0){
+            if(count % 60==0){
                 System.err.println(count + "Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
             }
         }
