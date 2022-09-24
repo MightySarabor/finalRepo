@@ -61,6 +61,8 @@ public class Count_Order_By_Name {
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
+                // cache deaktivieren, damit alle Ergebnisse angezeigt werden.
+                props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 
 
                 props.put("security.protocol", "SASL_PLAINTEXT");
@@ -92,7 +94,7 @@ public class Count_Order_By_Name {
                     .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
                     .count()
                     .toStream()
-                    .peek((k, v) -> System.err.println(k + " " + v))
+                    .peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
                     .filter((key, value) -> (value % 3 == 0))
                     .peek((key, value) -> System.err.println(value));
                     //.to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
