@@ -65,10 +65,12 @@ public class MyProducer {
 
 
     public static void main(String[] args) throws InterruptedException {
+        System.err.println("---Starte Producer---");
         int count = 0;
         while(true){
             Thread.sleep(10000);
             produceOrder(true, args[0]);
+            count+=count;
             if(count % 1000==0){
                 System.err.println("10 Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
             }
