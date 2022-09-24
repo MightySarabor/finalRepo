@@ -11,6 +11,8 @@ import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -64,6 +66,12 @@ public class Count_Order_By_Name {
                 props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
                 // cache deaktivieren, damit alle Ergebnisse angezeigt werden.
                 props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+                // temp Statedir, um immer frisch anzufangen
+                try {
+                    props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString())
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
 
                 props.put("security.protocol", "SASL_PLAINTEXT");
@@ -168,13 +176,14 @@ public class Count_Order_By_Name {
         records
         .map((k, v) -> KeyValue.pair("Count", 1))
         .groupByKey(Grouped.with(Serdes.String(), Serdes.Integer()))
+                .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofSeconds(30)))
         .count()
         .toStream()
         .peek((k, v) -> System.err.println("ERGEBNIS " + k + " " + v))
-        .filter((key, value) -> (value % 1000 == 0))
+        .filter((key, value) -> (value % 100 == 0))
         .peek((key, value) -> System.err.println(value +  " Aktuelle Zeit: " ))
-
-                .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+        .map((Windowed<String> key, Long count) -> new KeyValue<>(key.key(), count.toString()))
+        .to(outputTopic, Produced.with(Serdes.String(), Serdes.String()));
 
 
 
