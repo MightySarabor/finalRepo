@@ -5,6 +5,7 @@ import de.hstr.bigdata.Util.MyProducer;
 import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
 import de.hstr.bigdata.Util.pojos.PizzaPOJO;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
@@ -73,6 +74,7 @@ public class Count_Order_By_Name {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
 
                 props.put("security.protocol", "SASL_PLAINTEXT");
