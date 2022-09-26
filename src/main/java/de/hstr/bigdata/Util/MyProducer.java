@@ -68,7 +68,7 @@ public class MyProducer {
         producer = clusterProducer(true);
         int count = 0;
         while(true){
-            Thread.sleep(100);
+            Thread.sleep(10);
             produceOrder(true, args[0]);
             count = count + 1;
             if(count % 1000==0){
