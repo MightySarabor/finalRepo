@@ -72,9 +72,10 @@ public class MyProducer {
         ProducerRecord<String, String> record =
                 new ProducerRecord<String, String>(inputTopic, value);
         //Sending data
-        System.err.println(value);
+        //System.err.println(value);
         producer.send(record);
         producer.flush();
+        System.err.println("TEST");
     }
 
     public static void main(String[] args){
