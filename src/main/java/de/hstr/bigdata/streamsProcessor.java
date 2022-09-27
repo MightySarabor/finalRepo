@@ -1,31 +1,20 @@
 package de.hstr.bigdata;
 
 import de.hstr.bigdata.Util.Json.JSONSerde;
-import de.hstr.bigdata.Util.MyProducer;
-import de.hstr.bigdata.Util.POJOGenerator;
 import de.hstr.bigdata.Util.pojos.OrderPOJO;
-import de.hstr.bigdata.Util.pojos.PizzaPOJO;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
-import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-import static de.hstr.bigdata.Util.POJOGenerator.generateCustomer;
 import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded;
 
 
@@ -34,7 +23,7 @@ import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded
  * that reads from a source topic "streams-plaintext-input", where the values of messages represent lines of text,
  * and writes the messages as-is into a sink topic "streams-pipe-output".
  */
-public class Count_Order_By_Name {
+public class streamsProcessor {
 
     static void runKafkaStreams(final KafkaStreams streams) {
             final CountDownLatch latch = new CountDownLatch(1);
