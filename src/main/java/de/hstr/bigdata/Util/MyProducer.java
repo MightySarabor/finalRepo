@@ -3,12 +3,9 @@ package de.hstr.bigdata.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.hstr.bigdata.Util.Json.Json;
 import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.StreamsConfig;
 
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -19,14 +16,18 @@ import static de.hstr.bigdata.Util.POJOGenerator.*;
 
 
 public class MyProducer {
-
     private static KafkaProducer<String, String> producer;
     private int minId;
     private int maxId;
     private Random rnd;
 
+    public MyProducer(int minId, int maxId){
+        this.minId = minId;
+        this.maxId = maxId;
+        this.rnd = new Random();
+    }
 
-    public static KafkaProducer clusterProducer(boolean cluster) {
+    public static Properties setProps(boolean cluster) {
         Properties props = new Properties();
         if (cluster) {
             System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
@@ -49,14 +50,10 @@ public class MyProducer {
         }
         KafkaProducer<String, String> my_producer =
                 new KafkaProducer<String, String>(props);
-        return my_producer;
+        return props;
     }
 
-    public MyProducer(int minId, int maxId){
-        this.minId = minId;
-        this.maxId = maxId;
-        this.rnd = new Random();
-    }
+
 
     public void produceOrder(String inputTopic) {
 
@@ -79,12 +76,11 @@ public class MyProducer {
     }
 
     public static void main(String[] args){
-
+        producer = new KafkaProducer<>(setProps(true));
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         MyProducer prod1 = new MyProducer(0,20000);
-       //exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000, 1000, TimeUnit.MILLISECONDS);
-        while(true)
-        prod1.produceOrder("fleschm-1");
+        exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000, 1000, TimeUnit.MILLISECONDS);
+
     }
 
 
