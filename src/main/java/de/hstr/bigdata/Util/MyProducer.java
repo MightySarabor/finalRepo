@@ -84,13 +84,13 @@ public class MyProducer {
         MyProducer prod3 = new MyProducer(40000,60000, true);
         MyProducer prod4 = new MyProducer(60000,80000, true);
         MyProducer prod5 = new MyProducer(80000,100000, true);
-
-        exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000,1000, TimeUnit.MILLISECONDS);
-        exec.scheduleAtFixedRate(() -> prod2.produceOrder(args[0]), 2000,1000, TimeUnit.MILLISECONDS);
-        exec.scheduleAtFixedRate(() -> prod3.produceOrder(args[0]), 3000,1000, TimeUnit.MILLISECONDS);
-        exec.scheduleAtFixedRate(() -> prod4.produceOrder(args[0]), 4000,1000, TimeUnit.MILLISECONDS);
-        exec.scheduleAtFixedRate(() -> prod5.produceOrder(args[0]), 5000,1000, TimeUnit.MILLISECONDS);
-
+        for(int i = 0; i <= 1000; i++) {
+            exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000, 1000, TimeUnit.MILLISECONDS);
+            exec.scheduleAtFixedRate(() -> prod2.produceOrder(args[0]), 2000, 1000, TimeUnit.MILLISECONDS);
+            exec.scheduleAtFixedRate(() -> prod3.produceOrder(args[0]), 3000, 1000, TimeUnit.MILLISECONDS);
+            exec.scheduleAtFixedRate(() -> prod4.produceOrder(args[0]), 4000, 1000, TimeUnit.MILLISECONDS);
+            exec.scheduleAtFixedRate(() -> prod5.produceOrder(args[0]), 5000, 1000, TimeUnit.MILLISECONDS);
+        }
     }
 
 
