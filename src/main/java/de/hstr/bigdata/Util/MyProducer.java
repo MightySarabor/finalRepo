@@ -82,7 +82,7 @@ public class MyProducer {
         for(int i = 0; i < 5; i++){
             prod[i] = new MyProducer(2000*i, 2000* (i+1));
             int finalI = i;
-            exec.scheduleAtFixedRate(() -> prod[finalI].produceOrder(args[0]), 100, 100, TimeUnit.MILLISECONDS);
+            exec.scheduleAtFixedRate(() -> prod[finalI].produceOrder(args[0]), 10, 10, TimeUnit.MILLISECONDS);
         }
 
     }
