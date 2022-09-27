@@ -25,6 +25,7 @@ public class MyProducer {
     private int maxId;
     private Random rnd;
 
+
     public static KafkaProducer clusterProducer(boolean cluster) {
         Properties props = new Properties();
         if (cluster) {
@@ -51,14 +52,13 @@ public class MyProducer {
         return my_producer;
     }
 
-    public MyProducer(int minId, int maxId, boolean cluster){
+    public MyProducer(int minId, int maxId){
         this.minId = minId;
         this.maxId = maxId;
         this.rnd = new Random();
-        clusterProducer(cluster);
     }
 
-    public void produceOrder(String inputTopic) {
+    public void produceOrder() {
 
         int customerId = minId + rnd.nextInt(maxId-minId);
         String customerName = "Kunde" + customerId;
@@ -70,23 +70,23 @@ public class MyProducer {
             throw new RuntimeException(e);
         }
         ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>(inputTopic, value);
+                new ProducerRecord<>("fleschm-1", value);
         //Sending data
-        //System.err.println(value);
+
         producer.send(record);
         producer.flush();
-        System.err.println("TEST");
+        System.err.println(value);
     }
 
     public static void main(String[] args){
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        MyProducer prod1 = new MyProducer(0,20000, true);
-        MyProducer prod2 = new MyProducer(20000,40000, true);
-        MyProducer prod3 = new MyProducer(40000,60000, true);
-        MyProducer prod4 = new MyProducer(60000,80000, true);
-        MyProducer prod5 = new MyProducer(80000,100000, true);
+        MyProducer prod1 = new MyProducer(0,20000);
+        MyProducer prod2 = new MyProducer(20000,40000);
+        MyProducer prod3 = new MyProducer(40000,60000);
+        MyProducer prod4 = new MyProducer(60000,80000);
+        MyProducer prod5 = new MyProducer(80000,100000);
        // for(int i = 0; i <= 1000; i++) {
-            exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000, 1000, TimeUnit.MILLISECONDS);
+            exec.scheduleAtFixedRate(prod1::produceOrder, 1000, 1000, TimeUnit.MILLISECONDS);
            // exec.scheduleAtFixedRate(() -> prod2.produceOrder(args[0]), 2000, 1000, TimeUnit.MILLISECONDS);
             //exec.scheduleAtFixedRate(() -> prod3.produceOrder(args[0]), 3000, 1000, TimeUnit.MILLISECONDS);
             //exec.scheduleAtFixedRate(() -> prod4.produceOrder(args[0]), 4000, 1000, TimeUnit.MILLISECONDS);
