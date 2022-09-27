@@ -10,6 +10,9 @@ import org.apache.kafka.streams.StreamsConfig;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static de.hstr.bigdata.Util.POJOGenerator.*;
 
@@ -44,7 +47,7 @@ public class MyProducer {
         return my_producer;
     }
 
-    public static void produceOrder(boolean cluster, String inputTopic) {
+    public static void produceOrder(String inputTopic) {
         String value = null;
         //generate OrderString
         try {
@@ -66,17 +69,11 @@ public class MyProducer {
     public static void main(String[] args) throws InterruptedException {
         System.err.println("---Starte Producer---");
         producer = clusterProducer(true);
-        int count = 0;
-        while(true){
-            Thread.sleep(10);
-            produceOrder(true, args[0]);
-            count = count + 1;
-            if(count % 1000==0){
-                System.err.println(count + " Messages verschickt um " + new Timestamp(System.currentTimeMillis()));
-            } else if (count % 100 == 0) {
-                System.err.println(count);
-            }
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        exec.scheduleAtFixedRate(() -> produceOrder(args[0]),
+                1,
+                1,
+                TimeUnit.SECONDS);
 
-        }
     }
 }
