@@ -67,40 +67,13 @@ public class MyProducer {
 
 
     public static void main(String[] args) throws InterruptedException {
-        String[] names = generateCustomer(1);
+        String[] names = generateCustomer(1000);
+
         System.err.println("---Starte Producer---");
-        /*producer = clusterProducer(true);
-        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> produceOrder(args[0], names),
-                1000,
-                1000,
-                TimeUnit.MILLISECONDS);
-
-         */
-
-        Thread t1 = new Thread(new Runnable(){
-            public void run(){
-                producer = clusterProducer(true);
-                for (int i = 0; i < 1000; i ++){
-                produceOrder(args[0], names);
-
-            }
-            }
-        });
-
-        Thread t2 = new Thread(new Runnable(){
-            public void run(){
-                producer = clusterProducer(true);
-                for (int i = 0; i < 1000; i ++){
-                    produceOrder(args[0], names);
-                }
-            }
-        });
-
-        t1.start();
-        t2.start();
-
-        t1.join();
-        t2.join();
+        producer = clusterProducer(true);
+        for(int i = 0; i < 1000000; i++){
+            Thread.sleep(10);
+            produceOrder(args[0], names);
+        }
     }
 }
