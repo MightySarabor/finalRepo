@@ -47,22 +47,21 @@ public class streamsProcessor {
             Properties props = new Properties();
             if(cluster) {
                 System.setProperty("java.security.auth.login.config", "/home/fleschm/kafka.jaas");
-                //System.setProperty("com.sun.management.jmxremote.port", "1616");
-
                 props.put(StreamsConfig.APPLICATION_ID_CONFIG, StreamID);
                 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
                        "infbdt07.fh-trier.de:6667,infbdt08.fh-trier.de:6667,infbdt09.fh-trier.de:6667");
                 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
                 props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3);
+
                 // cache deaktivieren, damit alle Ergebnisse angezeigt werden.
-                props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+                //props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
                 // temp Statedir, um immer frisch anzufangen
-                try {
+                /*try {
                     props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
-                }
+                }*/
                 props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
 

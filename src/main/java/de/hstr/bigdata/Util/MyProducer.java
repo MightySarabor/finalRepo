@@ -67,7 +67,7 @@ public class MyProducer {
 
 
     public static void main(String[] args) throws InterruptedException {
-        String[] names = generateCustomer(2);
+        String[] names = generateCustomer(100);
         System.err.println("---Starte Producer---");
         producer = clusterProducer(true);
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
