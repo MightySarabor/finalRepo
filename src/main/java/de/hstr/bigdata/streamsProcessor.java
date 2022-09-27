@@ -57,11 +57,11 @@ public class streamsProcessor {
                 // cache deaktivieren, damit alle Ergebnisse angezeigt werden.
                 //props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
                 // temp Statedir, um immer frisch anzufangen
-                /*try {
+                try {
                     props.put(StreamsConfig.STATE_DIR_CONFIG, Files.createTempDirectory("tumbling-windows").toAbsolutePath().toString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
-                }*/
+                }
                 props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
 
