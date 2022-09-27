@@ -50,7 +50,7 @@ public class POJOGenerator {
             pizzas.add(generatePizza());
         }
         //System.err.println("Order erstellt");
-        return new OrderPOJO(generateSingleCustomer(), pizzas);
+        return new OrderPOJO(getRandomCustomer(names), pizzas);
     }
 
     public static PizzaPOJO generatePizza(){
