@@ -77,9 +77,13 @@ public class MyProducer {
 
     public static void main(String[] args){
         producer = new KafkaProducer<>(setProps(true));
-        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        MyProducer prod1 = new MyProducer(0,20000);
-        exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000, 1000, TimeUnit.MILLISECONDS);
+        MyProducer[] prod = new MyProducer[5];
+                ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        for(int i = 0; i < 5; i++){
+            prod[i] = new MyProducer(2000*i, 2000* (i+1));
+            int finalI = i;
+            exec.scheduleAtFixedRate(() -> prod[finalI].produceOrder(args[0]), 100, 100, TimeUnit.MILLISECONDS);
+        }
 
     }
 
