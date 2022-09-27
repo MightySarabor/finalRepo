@@ -10,6 +10,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,9 @@ import static de.hstr.bigdata.Util.POJOGenerator.*;
 public class MyProducer {
 
     private static KafkaProducer<String, String> producer;
+    private static int minId;
+    private static int maxId;
+    private static Random rnd;
 
     public static KafkaProducer clusterProducer(boolean cluster) {
         Properties props = new Properties();
@@ -47,33 +51,43 @@ public class MyProducer {
         return my_producer;
     }
 
-    public static void produceOrder(String inputTopic, String[] names) {
+    public MyProducer(int minId, int maxId, boolean cluster){
+        this.minId = minId;
+        this.maxId = maxId;
+        this.rnd = new Random();
+        clusterProducer(cluster);
+    }
+
+    public static void produceOrder(String inputTopic) {
+
+        int customerId = minId + rnd.nextInt(maxId-minId);
+        String customerName = "Kunde" + customerId;
         String value = null;
         //generate OrderString
         try {
-            value = Json.stringify(Json.toJson(generateOrder(names)));
+            value = Json.stringify(Json.toJson(generateOrder(customerName)));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
         ProducerRecord<String, String> record =
                 new ProducerRecord<String, String>(inputTopic, value);
         //Sending data
         System.err.println(value);
         producer.send(record);
         producer.flush();
-
     }
 
-
-    public static void main(String[] args) throws InterruptedException {
-        String[] names = generateCustomer(1000);
-
-        System.err.println("---Starte Producer---");
-        producer = clusterProducer(true);
-        for(int i = 0; i < 1000000; i++){
-            Thread.sleep(10);
-            produceOrder(args[0], names);
+    public static void main(String[] args){
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        for(int i=0; i <= 5; i++) {
+            MyProducer prod = new MyProducer(20000 * i, 200000 * (i + 1), true);
+            exec.scheduleAtFixedRate(() -> produceOrder(args[0]),
+                    1000,
+                    1000,
+                    TimeUnit.MILLISECONDS);
         }
+
     }
+
+
 }

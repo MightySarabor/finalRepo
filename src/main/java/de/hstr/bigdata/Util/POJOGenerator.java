@@ -41,16 +41,16 @@ public class POJOGenerator {
 
         return name;
     }
-    public static OrderPOJO generateOrder(String[] names){
+    public static OrderPOJO generateOrder(String customerName){
 
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
-        int numerOfOrders = ThreadLocalRandom.current().nextInt(0, 5);
+        int numerOfOrders = ThreadLocalRandom.current().nextInt(1, 5);
         for(int i = 0; i < numerOfOrders; i++)
         {
             pizzas.add(generatePizza());
         }
         //System.err.println("Order erstellt");
-        return new OrderPOJO(getRandomCustomer(names), pizzas);
+        return new OrderPOJO(customerName, pizzas);
     }
 
     public static PizzaPOJO generatePizza(){
@@ -59,12 +59,4 @@ public class POJOGenerator {
         return new PizzaPOJO(pizza, sizes[sizeAndPrice], prices[sizeAndPrice]);
     }
 
-    public static void main(String[] args) throws JsonProcessingException {
-
-        String[] names = generateCustomer(5);
-        for(int i = 0; i < 5; i++){
-            System.err.println(names[i]);
-            
-        }
-    }
 }
