@@ -88,10 +88,9 @@ public class streamsProcessor {
 
             final KStream<String, OrderPOJO> pizza = builder.stream(inputTopic,
                     Consumed.with(Serdes.String(), new JSONSerde<>()));
-                    pizza.peek((k, pv) -> System.err.println(pv.getCustomer()));
                     pizza.groupBy((k, v) -> v.getCustomer()).count().toStream()
-
-                    .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
+                    .peek((k, pv) -> System.err.println(k+" "+pv))
+                        .to(outputTopic, Produced.with(Serdes.String(), Serdes.Long()));
             return builder.build();
         }
     static Topology aggregatePizzaByCustomer(String inputTopic, String outputTopic) {
