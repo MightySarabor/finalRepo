@@ -21,9 +21,9 @@ import static de.hstr.bigdata.Util.POJOGenerator.*;
 public class MyProducer {
 
     private static KafkaProducer<String, String> producer;
-    private static int minId;
-    private static int maxId;
-    private static Random rnd;
+    private int minId;
+    private int maxId;
+    private Random rnd;
 
     public static KafkaProducer clusterProducer(boolean cluster) {
         Properties props = new Properties();
@@ -58,7 +58,7 @@ public class MyProducer {
         clusterProducer(cluster);
     }
 
-    public static void produceOrder(String inputTopic) {
+    public void produceOrder(String inputTopic) {
 
         int customerId = minId + rnd.nextInt(maxId-minId);
         String customerName = "Kunde" + customerId;
@@ -79,13 +79,17 @@ public class MyProducer {
 
     public static void main(String[] args){
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        for(int i=0; i <= 5; i++) {
-            MyProducer prod = new MyProducer(20000 * i, 200000 * (i + 1), true);
-            exec.scheduleAtFixedRate(() -> produceOrder(args[0]),
-                    1000,
-                    1000,
-                    TimeUnit.MILLISECONDS);
-        }
+        MyProducer prod1 = new MyProducer(0,20000, true);
+        MyProducer prod2 = new MyProducer(20000,40000, true);
+        MyProducer prod3 = new MyProducer(40000,60000, true);
+        MyProducer prod4 = new MyProducer(60000,80000, true);
+        MyProducer prod5 = new MyProducer(80000,100000, true);
+
+        exec.scheduleAtFixedRate(() -> prod1.produceOrder(args[0]), 1000,1000, TimeUnit.MILLISECONDS);
+        exec.scheduleAtFixedRate(() -> prod2.produceOrder(args[0]), 1000,1000, TimeUnit.MILLISECONDS);
+        exec.scheduleAtFixedRate(() -> prod3.produceOrder(args[0]), 1000,1000, TimeUnit.MILLISECONDS);
+        exec.scheduleAtFixedRate(() -> prod4.produceOrder(args[0]), 1000,1000, TimeUnit.MILLISECONDS);
+        exec.scheduleAtFixedRate(() -> prod5.produceOrder(args[0]), 1000,1000, TimeUnit.MILLISECONDS);
 
     }
 
