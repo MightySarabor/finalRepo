@@ -29,8 +29,6 @@ public class POJOGenerator {
         String[] names = new String[number_of_customers];
         for(int i = 0; i <  number_of_customers; i++){
             String name = faker.name().fullName();
-            //String firstName = faker.name().firstName();
-            //String lastName = faker.name().lastName();
             names[i] = name;
         }
         return names;
@@ -43,7 +41,7 @@ public class POJOGenerator {
 
         return name;
     }
-    public static OrderPOJO generateOrder(){
+    public static OrderPOJO generateOrder(String[] names){
 
         List<PizzaPOJO> pizzas = new ArrayList<PizzaPOJO>();
         int numerOfOrders = ThreadLocalRandom.current().nextInt(0, 5);

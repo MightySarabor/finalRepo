@@ -47,11 +47,11 @@ public class MyProducer {
         return my_producer;
     }
 
-    public static void produceOrder(String inputTopic) {
+    public static void produceOrder(String inputTopic, String[] names) {
         String value = null;
         //generate OrderString
         try {
-            value = Json.stringify(Json.toJson(generateOrder()));
+            value = Json.stringify(Json.toJson(generateOrder(names)));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -67,13 +67,13 @@ public class MyProducer {
 
 
     public static void main(String[] args) throws InterruptedException {
+        String[] names = generateCustomer(2);
         System.err.println("---Starte Producer---");
         producer = clusterProducer(true);
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-        exec.scheduleAtFixedRate(() -> produceOrder(args[0]),
-                1,
-                1,
-                TimeUnit.SECONDS);
-
+        exec.scheduleAtFixedRate(() -> produceOrder(args[0], names),
+                1000,
+                1000,
+                TimeUnit.MILLISECONDS);
     }
 }
