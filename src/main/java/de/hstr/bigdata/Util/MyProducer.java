@@ -81,7 +81,7 @@ public class MyProducer {
         MyProducer[] prod = new MyProducer[5];
         ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         for(int i = 0; i < 5; i++){
-            prod[i] = new MyProducer(200000*i, 200000* (i+1));
+            prod[i] = new MyProducer(2000000*i, 2000000* (i+1));
             int finalI = i;
             exec.scheduleAtFixedRate(() -> prod[finalI].produceOrder(args[0]), 5, 5, TimeUnit.MILLISECONDS);
         }
