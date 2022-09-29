@@ -20,11 +20,13 @@ public class MyProducer {
     private int minId;
     private int maxId;
     private Random rnd;
+    
 
     public MyProducer(int minId, int maxId){
         this.minId = minId;
         this.maxId = maxId;
         this.rnd = new Random();
+          producer = new KafkaProducer<>(setProps(true));
     }
 
     public static Properties setProps(boolean cluster) {
@@ -76,9 +78,8 @@ public class MyProducer {
     }
 
     public static void main(String[] args){
-        producer = new KafkaProducer<>(setProps(true));
         MyProducer[] prod = new MyProducer[5];
-                ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+        ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
         for(int i = 0; i < 5; i++){
             prod[i] = new MyProducer(200000*i, 200000* (i+1));
             int finalI = i;
